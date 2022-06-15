@@ -1,0 +1,19 @@
+name: Upload Vanguard Artifact
+description: Upload artifacts to Vanguard
+author: RWX
+inputs:
+  artifacts:
+    required: true
+  job-name:
+    required: false
+    description: This is required if you set the `name` property on your job. If you provided a name, set that same value here.
+  job-matrix:
+    required: true
+  vanguard-token:
+    required: true
+  vanguard-base-url:
+    required: false
+    default: https://vanguard.rwx.com
+runs:
+  using: 'node16'
+  main: 'dist/index.js'

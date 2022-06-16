@@ -2,12 +2,12 @@ import * as core from '@actions/core'
 import * as github from '@actions/github'
 import {BulkArtifactKind, BulkArtifactMimeType} from './api/vanguard'
 
-type InputArtifact = {
+export type InputArtifact = {
   kind: BulkArtifactKind
   name: string
   path: string
 }
-type Inputs = {
+export type Inputs = {
   accountName: string
   artifacts: InputArtifact[]
   jobMatrix: object | null

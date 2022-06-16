@@ -97,6 +97,21 @@ exports.markBulkArtifactsUploaded = markBulkArtifactsUploaded;
 
 "use strict";
 
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+const run_1 = __importDefault(__nccwpck_require__(7884));
+(0, run_1.default)();
+
+
+/***/ }),
+
+/***/ 7884:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+"use strict";
+
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
     var desc = Object.getOwnPropertyDescriptor(m, k);
@@ -192,6 +207,7 @@ function run() {
         }
     });
 }
+exports["default"] = run;
 function uploadEach(bulkArtifacts, originalArtifacts) {
     return bulkArtifacts.map((bulkArtifact) => __awaiter(this, void 0, void 0, function* () {
         const originalArtifact = originalArtifacts.find(a => a.external_id === bulkArtifact.external_id);
@@ -205,7 +221,6 @@ function uploadEach(bulkArtifacts, originalArtifacts) {
         return [originalArtifact, response];
     }));
 }
-run();
 
 
 /***/ }),

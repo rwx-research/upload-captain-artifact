@@ -4,12 +4,7 @@ import {
   createBulkArtifacts,
   markBulkArtifactsUploaded
 } from '../../src/api/vanguard'
-import fetch from 'node-fetch'
-
-jest.mock('node-fetch')
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const mockFetch = fetch as unknown as jest.Mock<any, any>
+import fetchMock from '../test-utils/fetch-mock'
 
 describe('Vanguard API', () => {
   describe('createBulkArtifacts', () => {
@@ -36,17 +31,25 @@ describe('Vanguard API', () => {
     }
 
     it('returns the artifacts when the request is successful', async () => {
-      const response = {
-        bulk_artifacts: [
-          {external_id: 'some-uuid', upload_url: 'https://some-s3-url'},
-          {external_id: 'some-other-uuid', upload_url: 'https://some-s3-url'}
-        ]
-      }
-
-      mockFetch.mockResolvedValueOnce({
-        ok: true,
-        json: jest.fn().mockResolvedValueOnce(response)
-      })
+      fetchMock.postOnce(
+        {
+          body: input,
+          headers: {Authorization: 'Bearer fake-token'},
+          url: 'https://vanguard.example.com/api/organization/integrations/github/bulk_artifacts'
+        },
+        {
+          body: {
+            bulk_artifacts: [
+              {external_id: 'some-uuid', upload_url: 'https://some-s3-url'},
+              {
+                external_id: 'some-other-uuid',
+                upload_url: 'https://some-s3-url'
+              }
+            ]
+          },
+          status: 201
+        }
+      )
 
       const result = await createBulkArtifacts(input, {
         vanguardBaseUrl: 'https://vanguard.example.com',
@@ -63,17 +66,22 @@ describe('Vanguard API', () => {
     })
 
     it('returns the errors when the request is not successful and has errors', async () => {
-      const response = {
-        errors: [
-          {error: 'err-one', message: 'Error one'},
-          {error: 'err-two', message: 'Error two'}
-        ]
-      }
-
-      mockFetch.mockResolvedValueOnce({
-        ok: false,
-        json: jest.fn().mockResolvedValueOnce(response)
-      })
+      fetchMock.postOnce(
+        {
+          body: input,
+          headers: {Authorization: 'Bearer fake-token'},
+          url: 'https://vanguard.example.com/api/organization/integrations/github/bulk_artifacts'
+        },
+        {
+          body: {
+            errors: [
+              {error: 'err-one', message: 'Error one'},
+              {error: 'err-two', message: 'Error two'}
+            ]
+          },
+          status: 422
+        }
+      )
 
       const result = await createBulkArtifacts(input, {
         vanguardBaseUrl: 'https://vanguard.example.com',
@@ -90,12 +98,17 @@ describe('Vanguard API', () => {
     })
 
     it('returns a generic error when the request is not successful and has no errors', async () => {
-      const response = {}
-
-      mockFetch.mockResolvedValueOnce({
-        ok: false,
-        json: jest.fn().mockResolvedValueOnce(response)
-      })
+      fetchMock.postOnce(
+        {
+          body: input,
+          headers: {Authorization: 'Bearer fake-token'},
+          url: 'https://vanguard.example.com/api/organization/integrations/github/bulk_artifacts'
+        },
+        {
+          body: {},
+          status: 422
+        }
+      )
 
       const result = await createBulkArtifacts(input, {
         vanguardBaseUrl: 'https://vanguard.example.com',
@@ -115,10 +128,17 @@ describe('Vanguard API', () => {
     })
 
     it('returns a generic error when the request is not successful and has issues parsing json', async () => {
-      mockFetch.mockResolvedValueOnce({
-        ok: false,
-        json: jest.fn().mockRejectedValueOnce('uh oh')
-      })
+      fetchMock.postOnce(
+        {
+          body: input,
+          headers: {Authorization: 'Bearer fake-token'},
+          url: 'https://vanguard.example.com/api/organization/integrations/github/bulk_artifacts'
+        },
+        {
+          body: 'not json',
+          status: 500
+        }
+      )
 
       const result = await createBulkArtifacts(input, {
         vanguardBaseUrl: 'https://vanguard.example.com',
@@ -142,7 +162,16 @@ describe('Vanguard API', () => {
     const externalIds = ['id-one', 'id-two']
 
     it('returns ok when the request is successful', async () => {
-      mockFetch.mockResolvedValueOnce({ok: true})
+      fetchMock.putOnce(
+        {
+          body: {external_ids: externalIds},
+          headers: {Authorization: 'Bearer fake-token'},
+          url: 'https://vanguard.example.com/api/organization/integrations/github/bulk_artifacts/uploaded'
+        },
+        {
+          status: 204
+        }
+      )
 
       const result = await markBulkArtifactsUploaded(externalIds, {
         vanguardBaseUrl: 'https://vanguard.example.com',
@@ -153,7 +182,16 @@ describe('Vanguard API', () => {
     })
 
     it('returns a generic error when the request is not successful', async () => {
-      mockFetch.mockResolvedValueOnce({ok: false})
+      fetchMock.putOnce(
+        {
+          body: {external_ids: externalIds},
+          headers: {Authorization: 'Bearer fake-token'},
+          url: 'https://vanguard.example.com/api/organization/integrations/github/bulk_artifacts/uploaded'
+        },
+        {
+          status: 422
+        }
+      )
 
       const result = await markBulkArtifactsUploaded(externalIds, {
         vanguardBaseUrl: 'https://vanguard.example.com',

@@ -188,12 +188,14 @@ function run() {
             const failedArtifacts = uploadResponses
                 .filter(([, response]) => !response.ok)
                 .map(([artifact]) => artifact);
-            // intentionally ignore any potential errors here- if it fails,
-            // our server will eventually find out the files were uploaded
-            yield (0, vanguard_1.markBulkArtifactsUploaded)(uploadedExternalIds, {
-                vanguardBaseUrl: inputs.vanguardBaseUrl,
-                vanguardToken: inputs.vanguardToken
-            });
+            if (uploadedExternalIds.length) {
+                // intentionally ignore any potential errors here- if it fails,
+                // our server will eventually find out the files were uploaded
+                yield (0, vanguard_1.markBulkArtifactsUploaded)(uploadedExternalIds, {
+                    vanguardBaseUrl: inputs.vanguardBaseUrl,
+                    vanguardToken: inputs.vanguardToken
+                });
+            }
             if (failedArtifacts.length) {
                 throw new Error(`Some artifacts could not be uploaded:\n\n  Artifacts: ${failedArtifacts
                     .map(artifact => artifact.name)

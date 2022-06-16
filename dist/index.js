@@ -97,6 +97,21 @@ exports.markBulkArtifactsUploaded = markBulkArtifactsUploaded;
 
 "use strict";
 
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+const run_1 = __importDefault(__nccwpck_require__(7884));
+(0, run_1.default)();
+
+
+/***/ }),
+
+/***/ 7884:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+"use strict";
+
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
     var desc = Object.getOwnPropertyDescriptor(m, k);
@@ -134,7 +149,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const core = __importStar(__nccwpck_require__(2186));
-const github = __importStar(__nccwpck_require__(5438));
 const path_1 = __nccwpck_require__(1017);
 const node_fetch_1 = __importDefault(__nccwpck_require__(4429));
 const fs_1 = __nccwpck_require__(7147);
@@ -144,25 +158,23 @@ const utils_1 = __nccwpck_require__(918);
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            const artifacts = JSON.parse(core.getInput('artifacts'));
-            const artifactsToUpload = artifacts.map(artifact => (Object.assign(Object.assign({}, artifact), { mime_type: (0, utils_1.mimeTypeFromExtension)((0, path_1.extname)(artifact.path).toLowerCase()), external_id: (0, uuid_1.v4)() })));
-            const vanguardToken = core.getInput('vanguard-token');
-            const vanguardBaseUrl = core.getInput('vanguard-base-url');
+            const inputs = (0, utils_1.getInputs)();
+            const artifactsToUpload = inputs.artifacts.map(artifact => (Object.assign(Object.assign({}, artifact), { mime_type: (0, utils_1.mimeTypeFromExtension)((0, path_1.extname)(artifact.path).toLowerCase()), external_id: (0, uuid_1.v4)() })));
             const bulkArtifactsResult = yield (0, vanguard_1.createBulkArtifacts)({
-                account_name: github.context.repo.owner,
+                account_name: inputs.accountName,
                 artifacts: artifactsToUpload.map(artifact => ({
                     kind: artifact.kind,
                     name: artifact.name,
                     mime_type: artifact.mime_type,
                     external_id: artifact.external_id
                 })),
-                job_name: core.getInput('job-name') || github.context.job,
-                job_matrix: JSON.parse(core.getInput('job-matrix')),
-                repository_name: github.context.repo.repo,
-                run_id: github.context.runId.toString()
+                job_name: inputs.jobName,
+                job_matrix: inputs.jobMatrix,
+                repository_name: inputs.repositoryName,
+                run_id: inputs.runId
             }, {
-                vanguardToken,
-                vanguardBaseUrl
+                vanguardBaseUrl: inputs.vanguardBaseUrl,
+                vanguardToken: inputs.vanguardToken
             });
             if (!bulkArtifactsResult.ok) {
                 throw new Error(`Bulk artifacts POST failed:\n\n  - Errors: ${bulkArtifactsResult.error
@@ -179,8 +191,8 @@ function run() {
             // intentionally ignore any potential errors here- if it fails,
             // our server will eventually find out the files were uploaded
             yield (0, vanguard_1.markBulkArtifactsUploaded)(uploadedExternalIds, {
-                vanguardToken,
-                vanguardBaseUrl
+                vanguardBaseUrl: inputs.vanguardBaseUrl,
+                vanguardToken: inputs.vanguardToken
             });
             if (failedArtifacts.length) {
                 throw new Error(`Some artifacts could not be uploaded:\n\n  Artifacts: ${failedArtifacts
@@ -195,6 +207,7 @@ function run() {
         }
     });
 }
+exports["default"] = run;
 function uploadEach(bulkArtifacts, originalArtifacts) {
     return bulkArtifacts.map((bulkArtifact) => __awaiter(this, void 0, void 0, function* () {
         const originalArtifact = originalArtifacts.find(a => a.external_id === bulkArtifact.external_id);
@@ -208,18 +221,42 @@ function uploadEach(bulkArtifacts, originalArtifacts) {
         return [originalArtifact, response];
     }));
 }
-run();
 
 
 /***/ }),
 
 /***/ 918:
-/***/ ((__unused_webpack_module, exports) => {
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
 "use strict";
 
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.mimeTypeFromExtension = void 0;
+exports.getInputs = exports.mimeTypeFromExtension = void 0;
+const core = __importStar(__nccwpck_require__(2186));
+const github = __importStar(__nccwpck_require__(5438));
 function mimeTypeFromExtension(extension) {
     const lowerCaseExtension = extension.toLowerCase();
     if (lowerCaseExtension.toLowerCase() === '.json') {
@@ -231,6 +268,19 @@ function mimeTypeFromExtension(extension) {
     throw new Error('Only .json and .xml files are permitted.');
 }
 exports.mimeTypeFromExtension = mimeTypeFromExtension;
+function getInputs() {
+    return {
+        accountName: github.context.repo.owner,
+        artifacts: JSON.parse(core.getInput('artifacts')),
+        jobMatrix: JSON.parse(core.getInput('job-matrix')),
+        jobName: core.getInput('job-name') || github.context.job,
+        repositoryName: github.context.repo.repo,
+        runId: github.context.runId.toString(),
+        vanguardBaseUrl: core.getInput('vanguard-base-url'),
+        vanguardToken: core.getInput('vanguard-token')
+    };
+}
+exports.getInputs = getInputs;
 
 
 /***/ }),

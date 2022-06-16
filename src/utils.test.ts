@@ -41,6 +41,8 @@ describe('Utils', () => {
       ;(core.getInput as jest.Mock<any>).mockImplementation(input => {
         if (input === 'artifacts') {
           return '[{"kind": "test_results", "name": "Some Name", "path": "some_path.json"}]'
+        } else if (input === 'if-files-not-found') {
+          return 'warn'
         } else if (input === 'job-matrix') {
           return '{"foo": 1, "bar": 2}'
         } else if (input === 'job-name') {
@@ -59,6 +61,7 @@ describe('Utils', () => {
         artifacts: [
           {kind: 'test_results', name: 'Some Name', path: 'some_path.json'}
         ],
+        ifFilesNotFound: 'warn',
         jobMatrix: {foo: 1, bar: 2},
         jobName: 'Some Job Name',
         repositoryName: 'upload-vanguard-artifact',
@@ -71,6 +74,8 @@ describe('Utils', () => {
       ;(core.getInput as jest.Mock<any>).mockImplementation(input => {
         if (input === 'artifacts') {
           return '[{"kind": "test_results", "name": "Some Name", "path": "some_path.json"}]'
+        } else if (input === 'if-files-not-found') {
+          return 'ignore'
         } else if (input === 'job-matrix') {
           return null
         } else if (input === 'job-name') {
@@ -89,6 +94,7 @@ describe('Utils', () => {
         artifacts: [
           {kind: 'test_results', name: 'Some Name', path: 'some_path.json'}
         ],
+        ifFilesNotFound: 'ignore',
         jobMatrix: null,
         jobName: 'some_job_id',
         repositoryName: 'upload-vanguard-artifact',

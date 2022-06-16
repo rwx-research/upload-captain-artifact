@@ -270,10 +270,19 @@ function mimeTypeFromExtension(extension) {
     throw new Error('Only .json and .xml files are permitted.');
 }
 exports.mimeTypeFromExtension = mimeTypeFromExtension;
+function parseIfFilesNotFound(input) {
+    if (input === 'ignore' || input === 'warn' || input === 'error') {
+        return input;
+    }
+    else {
+        throw new Error(`Unexpected value ${input} for 'if-files-not-found'. Acceptable values are 'ignore', 'warn', and 'error'`);
+    }
+}
 function getInputs() {
     return {
         accountName: github.context.repo.owner,
         artifacts: JSON.parse(core.getInput('artifacts')),
+        ifFilesNotFound: parseIfFilesNotFound(core.getInput('if-files-not-found')),
         jobMatrix: JSON.parse(core.getInput('job-matrix')),
         jobName: core.getInput('job-name') || github.context.job,
         repositoryName: github.context.repo.repo,

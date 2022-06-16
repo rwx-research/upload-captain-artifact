@@ -34,6 +34,7 @@ describe('run', () => {
           path: './fixtures/xml-artifact.xml'
         }
       ],
+      ifFilesNotFound: 'warn',
       jobMatrix: null,
       jobName: 'some-job-name',
       repositoryName: 'upload-vanguard-artifact',
@@ -119,6 +120,7 @@ describe('run', () => {
           path: './fixtures/artifact.txt'
         }
       ],
+      ifFilesNotFound: 'warn',
       jobMatrix: null,
       jobName: 'some-job-name',
       repositoryName: 'upload-vanguard-artifact',
@@ -152,6 +154,7 @@ describe('run', () => {
           path: './fixtures/xml-artifact.xml'
         }
       ],
+      ifFilesNotFound: 'warn',
       jobMatrix: null,
       jobName: 'some-job-name',
       repositoryName: 'upload-vanguard-artifact',
@@ -222,6 +225,7 @@ describe('run', () => {
           path: './fixtures/xml-artifact.xml'
         }
       ],
+      ifFilesNotFound: 'warn',
       jobMatrix: null,
       jobName: 'some-job-name',
       repositoryName: 'upload-vanguard-artifact',
@@ -309,6 +313,7 @@ describe('run', () => {
           path: './fixtures/xml-artifact.xml'
         }
       ],
+      ifFilesNotFound: 'warn',
       jobMatrix: null,
       jobName: 'some-job-name',
       repositoryName: 'upload-vanguard-artifact',
@@ -385,6 +390,7 @@ describe('run', () => {
           path: './fixtures/xml-artifact.xml'
         }
       ],
+      ifFilesNotFound: 'warn',
       jobMatrix: null,
       jobName: 'some-job-name',
       repositoryName: 'upload-vanguard-artifact',

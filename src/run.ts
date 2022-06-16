@@ -64,12 +64,14 @@ export default async function run(): Promise<void> {
       .filter(([, response]) => !response.ok)
       .map(([artifact]) => artifact)
 
-    // intentionally ignore any potential errors here- if it fails,
-    // our server will eventually find out the files were uploaded
-    await markBulkArtifactsUploaded(uploadedExternalIds, {
-      vanguardBaseUrl: inputs.vanguardBaseUrl,
-      vanguardToken: inputs.vanguardToken
-    })
+    if (uploadedExternalIds.length) {
+      // intentionally ignore any potential errors here- if it fails,
+      // our server will eventually find out the files were uploaded
+      await markBulkArtifactsUploaded(uploadedExternalIds, {
+        vanguardBaseUrl: inputs.vanguardBaseUrl,
+        vanguardToken: inputs.vanguardToken
+      })
+    }
 
     if (failedArtifacts.length) {
       throw new Error(

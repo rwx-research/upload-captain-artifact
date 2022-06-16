@@ -159,10 +159,31 @@ function run() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             const inputs = (0, utils_1.getInputs)();
-            const artifactsToUpload = inputs.artifacts.map(artifact => (Object.assign(Object.assign({}, artifact), { mime_type: (0, utils_1.mimeTypeFromExtension)((0, path_1.extname)(artifact.path).toLowerCase()), external_id: (0, uuid_1.v4)() })));
+            const artifacts = inputs.artifacts.map(artifact => (Object.assign(Object.assign({}, artifact), { mime_type: (0, utils_1.mimeTypeFromExtension)((0, path_1.extname)(artifact.path).toLowerCase()), external_id: (0, uuid_1.v4)() })));
+            const [artifactsWithFiles, artifactsWithoutFiles] = artifacts.reduce(([withFiles, withoutFiles], artifact) => {
+                if ((0, fs_1.existsSync)(artifact.path)) {
+                    return [[...withFiles, artifact], withoutFiles];
+                }
+                else {
+                    return [withFiles, [...withoutFiles, artifact]];
+                }
+            }, [[], []]);
+            if (inputs.ifFilesNotFound === 'warn') {
+                for (const artifact of artifactsWithoutFiles) {
+                    core.warning(`Artifact file not found at '${artifact.path}' for artifact '${artifact.name}'`);
+                }
+            }
+            else if (inputs.ifFilesNotFound === 'error') {
+                for (const artifact of artifactsWithoutFiles) {
+                    core.error(`Artifact file not found at '${artifact.path}' for artifact '${artifact.name}'`);
+                }
+                if (artifactsWithoutFiles.length) {
+                    core.setFailed('Artifact(s) are missing file(s)');
+                }
+            }
             const bulkArtifactsResult = yield (0, vanguard_1.createBulkArtifacts)({
                 account_name: inputs.accountName,
-                artifacts: artifactsToUpload.map(artifact => ({
+                artifacts: artifacts.map(artifact => ({
                     kind: artifact.kind,
                     name: artifact.name,
                     mime_type: artifact.mime_type,
@@ -181,7 +202,7 @@ function run() {
                     .map(error => error.message)
                     .join(', ')}`);
             }
-            const uploadResponses = yield Promise.all(uploadEach(bulkArtifactsResult.value, artifactsToUpload));
+            const uploadResponses = yield Promise.all(uploadEach(bulkArtifactsResult.value, artifactsWithFiles));
             const uploadedExternalIds = uploadResponses
                 .filter(([, response]) => response.ok)
                 .map(([artifact]) => artifact.external_id);
@@ -210,17 +231,17 @@ function run() {
     });
 }
 exports["default"] = run;
-function uploadEach(bulkArtifacts, originalArtifacts) {
-    return bulkArtifacts.map((bulkArtifact) => __awaiter(this, void 0, void 0, function* () {
-        const originalArtifact = originalArtifacts.find(a => a.external_id === bulkArtifact.external_id);
-        if (!originalArtifact) {
-            throw new Error('Unreachable (could not find artifact with matching external ID)');
+function uploadEach(bulkArtifacts, artifactsWithFiles) {
+    return artifactsWithFiles.map((artifact) => __awaiter(this, void 0, void 0, function* () {
+        const bulkArtifact = bulkArtifacts.find(ba => ba.external_id === artifact.external_id);
+        if (!bulkArtifact) {
+            throw new Error('Unreachable (could not find bulk artifact with matching external ID)');
         }
         const response = yield (0, node_fetch_1.default)(bulkArtifact.upload_url, {
-            body: (0, fs_1.readFileSync)(originalArtifact.path),
+            body: (0, fs_1.readFileSync)(artifact.path),
             method: 'PUT'
         });
-        return [originalArtifact, response];
+        return [artifact, response];
     }));
 }
 
@@ -270,10 +291,19 @@ function mimeTypeFromExtension(extension) {
     throw new Error('Only .json and .xml files are permitted.');
 }
 exports.mimeTypeFromExtension = mimeTypeFromExtension;
+function parseIfFilesNotFound(input) {
+    if (input === 'ignore' || input === 'warn' || input === 'error') {
+        return input;
+    }
+    else {
+        throw new Error(`Unexpected value ${input} for 'if-files-not-found'. Acceptable values are 'ignore', 'warn', and 'error'`);
+    }
+}
 function getInputs() {
     return {
         accountName: github.context.repo.owner,
         artifacts: JSON.parse(core.getInput('artifacts')),
+        ifFilesNotFound: parseIfFilesNotFound(core.getInput('if-files-not-found')),
         jobMatrix: JSON.parse(core.getInput('job-matrix')),
         jobName: core.getInput('job-name') || github.context.job,
         repositoryName: github.context.repo.repo,

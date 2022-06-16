@@ -7,9 +7,11 @@ export type InputArtifact = {
   name: string
   path: string
 }
+export type IfFilesNotFound = 'ignore' | 'warn' | 'error'
 export type Inputs = {
   accountName: string
   artifacts: InputArtifact[]
+  ifFilesNotFound: IfFilesNotFound
   jobMatrix: object | null
   jobName: string
   repositoryName: string
@@ -30,10 +32,21 @@ export function mimeTypeFromExtension(extension: string): BulkArtifactMimeType {
   throw new Error('Only .json and .xml files are permitted.')
 }
 
+function parseIfFilesNotFound(input: string): IfFilesNotFound {
+  if (input === 'ignore' || input === 'warn' || input === 'error') {
+    return input
+  } else {
+    throw new Error(
+      `Unexpected value ${input} for 'if-files-not-found'. Acceptable values are 'ignore', 'warn', and 'error'`
+    )
+  }
+}
+
 export function getInputs(): Inputs {
   return {
     accountName: github.context.repo.owner,
     artifacts: JSON.parse(core.getInput('artifacts')) as InputArtifact[],
+    ifFilesNotFound: parseIfFilesNotFound(core.getInput('if-files-not-found')),
     jobMatrix: JSON.parse(core.getInput('job-matrix')),
     jobName: core.getInput('job-name') || github.context.job,
     repositoryName: github.context.repo.repo,

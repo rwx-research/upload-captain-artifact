@@ -1,7 +1,7 @@
 import * as core from '@actions/core'
 import {extname} from 'path'
 import fetch, {Response} from 'node-fetch'
-import {readFileSync} from 'fs'
+import {existsSync, readFileSync} from 'fs'
 import {v4 as uuidv4} from 'uuid'
 import {
   createBulkArtifacts,
@@ -19,15 +19,46 @@ type Artifact = InputArtifact & {
 export default async function run(): Promise<void> {
   try {
     const inputs = getInputs()
-    const artifactsToUpload: Artifact[] = inputs.artifacts.map(artifact => ({
+    const artifacts: Artifact[] = inputs.artifacts.map(artifact => ({
       ...artifact,
       mime_type: mimeTypeFromExtension(extname(artifact.path).toLowerCase()),
       external_id: uuidv4()
     }))
+
+    const [artifactsWithFiles, artifactsWithoutFiles] = artifacts.reduce<
+      [Artifact[], Artifact[]]
+    >(
+      ([withFiles, withoutFiles], artifact) => {
+        if (existsSync(artifact.path)) {
+          return [[...withFiles, artifact], withoutFiles]
+        } else {
+          return [withFiles, [...withoutFiles, artifact]]
+        }
+      },
+      [[], []]
+    )
+
+    if (inputs.ifFilesNotFound === 'warn') {
+      for (const artifact of artifactsWithoutFiles) {
+        core.warning(
+          `Artifact file not found at '${artifact.path}' for artifact '${artifact.name}'`
+        )
+      }
+    } else if (inputs.ifFilesNotFound === 'error') {
+      for (const artifact of artifactsWithoutFiles) {
+        core.error(
+          `Artifact file not found at '${artifact.path}' for artifact '${artifact.name}'`
+        )
+      }
+      if (artifactsWithoutFiles.length) {
+        core.setFailed('Artifact(s) are missing file(s)')
+      }
+    }
+
     const bulkArtifactsResult = await createBulkArtifacts(
       {
         account_name: inputs.accountName,
-        artifacts: artifactsToUpload.map(artifact => ({
+        artifacts: artifacts.map(artifact => ({
           kind: artifact.kind,
           name: artifact.name,
           mime_type: artifact.mime_type,
@@ -53,7 +84,7 @@ export default async function run(): Promise<void> {
     }
 
     const uploadResponses = await Promise.all(
-      uploadEach(bulkArtifactsResult.value, artifactsToUpload)
+      uploadEach(bulkArtifactsResult.value, artifactsWithFiles)
     )
 
     const uploadedExternalIds = uploadResponses
@@ -89,24 +120,24 @@ export default async function run(): Promise<void> {
 
 function uploadEach(
   bulkArtifacts: BulkArtifact[],
-  originalArtifacts: Artifact[]
+  artifactsWithFiles: Artifact[]
 ): Promise<[Artifact, Response]>[] {
-  return bulkArtifacts.map(async bulkArtifact => {
-    const originalArtifact = originalArtifacts.find(
-      a => a.external_id === bulkArtifact.external_id
+  return artifactsWithFiles.map(async artifact => {
+    const bulkArtifact = bulkArtifacts.find(
+      ba => ba.external_id === artifact.external_id
     )
 
-    if (!originalArtifact) {
+    if (!bulkArtifact) {
       throw new Error(
-        'Unreachable (could not find artifact with matching external ID)'
+        'Unreachable (could not find bulk artifact with matching external ID)'
       )
     }
 
     const response = await fetch(bulkArtifact.upload_url, {
-      body: readFileSync(originalArtifact.path),
+      body: readFileSync(artifact.path),
       method: 'PUT'
     })
 
-    return [originalArtifact, response] as [Artifact, Response]
+    return [artifact, response] as [Artifact, Response]
   })
 }

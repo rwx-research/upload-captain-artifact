@@ -1,4 +1,22 @@
-import {BulkArtifactMimeType} from './api/vanguard'
+import * as core from '@actions/core'
+import * as github from '@actions/github'
+import {BulkArtifactKind, BulkArtifactMimeType} from './api/vanguard'
+
+type InputArtifact = {
+  kind: BulkArtifactKind
+  name: string
+  path: string
+}
+type Inputs = {
+  accountName: string
+  artifacts: InputArtifact[]
+  jobMatrix: object | null
+  jobName: string
+  repositoryName: string
+  runId: string
+  vanguardBaseUrl: string
+  vanguardToken: string
+}
 
 export function mimeTypeFromExtension(extension: string): BulkArtifactMimeType {
   const lowerCaseExtension = extension.toLowerCase()
@@ -10,4 +28,17 @@ export function mimeTypeFromExtension(extension: string): BulkArtifactMimeType {
   }
 
   throw new Error('Only .json and .xml files are permitted.')
+}
+
+export function getInputs(): Inputs {
+  return {
+    accountName: github.context.repo.owner,
+    artifacts: JSON.parse(core.getInput('artifacts')) as InputArtifact[],
+    jobMatrix: JSON.parse(core.getInput('job-matrix')),
+    jobName: core.getInput('job-name') || github.context.job,
+    repositoryName: github.context.repo.repo,
+    runId: github.context.runId.toString(),
+    vanguardBaseUrl: core.getInput('vanguard-base-url'),
+    vanguardToken: core.getInput('vanguard-token')
+  }
 }

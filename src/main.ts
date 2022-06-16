@@ -1,5 +1,4 @@
 import * as core from '@actions/core'
-import * as github from '@actions/github'
 import {extname} from 'path'
 import fetch, {Response} from 'node-fetch'
 import {readFileSync} from 'fs'
@@ -11,7 +10,7 @@ import {
   BulkArtifactMimeType,
   markBulkArtifactsUploaded
 } from './api/vanguard'
-import {mimeTypeFromExtension} from './utils'
+import {getInputs, mimeTypeFromExtension} from './utils'
 
 type InputArtifact = {
   kind: BulkArtifactKind
@@ -25,32 +24,29 @@ type Artifact = InputArtifact & {
 
 async function run(): Promise<void> {
   try {
-    const artifacts: InputArtifact[] = JSON.parse(core.getInput('artifacts'))
-    const artifactsToUpload: Artifact[] = artifacts.map(artifact => ({
+    const inputs = getInputs()
+    const artifactsToUpload: Artifact[] = inputs.artifacts.map(artifact => ({
       ...artifact,
       mime_type: mimeTypeFromExtension(extname(artifact.path).toLowerCase()),
       external_id: uuidv4()
     }))
-    const vanguardToken = core.getInput('vanguard-token')
-    const vanguardBaseUrl = core.getInput('vanguard-base-url')
-
     const bulkArtifactsResult = await createBulkArtifacts(
       {
-        account_name: github.context.repo.owner,
+        account_name: inputs.accountName,
         artifacts: artifactsToUpload.map(artifact => ({
           kind: artifact.kind,
           name: artifact.name,
           mime_type: artifact.mime_type,
           external_id: artifact.external_id
         })),
-        job_name: core.getInput('job-name') || github.context.job,
-        job_matrix: JSON.parse(core.getInput('job-matrix')),
-        repository_name: github.context.repo.repo,
-        run_id: github.context.runId.toString()
+        job_name: inputs.jobName,
+        job_matrix: inputs.jobMatrix,
+        repository_name: inputs.repositoryName,
+        run_id: inputs.runId
       },
       {
-        vanguardToken,
-        vanguardBaseUrl
+        vanguardBaseUrl: inputs.vanguardBaseUrl,
+        vanguardToken: inputs.vanguardToken
       }
     )
 
@@ -77,8 +73,8 @@ async function run(): Promise<void> {
     // intentionally ignore any potential errors here- if it fails,
     // our server will eventually find out the files were uploaded
     await markBulkArtifactsUploaded(uploadedExternalIds, {
-      vanguardToken,
-      vanguardBaseUrl
+      vanguardBaseUrl: inputs.vanguardBaseUrl,
+      vanguardToken: inputs.vanguardToken
     })
 
     if (failedArtifacts.length) {

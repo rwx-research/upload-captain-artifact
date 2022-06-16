@@ -1,9 +1,11 @@
 import {BulkArtifactMimeType} from './api/vanguard'
 
 export function mimeTypeFromExtension(extension: string): BulkArtifactMimeType {
-  if (extension === '.json') {
+  const lowerCaseExtension = extension.toLowerCase()
+
+  if (lowerCaseExtension.toLowerCase() === '.json') {
     return 'application/json'
-  } else if (extension === '.xml') {
+  } else if (lowerCaseExtension === '.xml') {
     return 'application/xml'
   }
 

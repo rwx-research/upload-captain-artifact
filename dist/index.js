@@ -21,6 +21,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.markBulkArtifactsUploaded = exports.createBulkArtifacts = void 0;
 const node_fetch_1 = __importDefault(__nccwpck_require__(4429));
+const genericCreateBulkArtifactsError = [
+    {
+        error: 'unexpected_error',
+        message: 'An unexpected error occurred while creating bulk artifacts'
+    }
+];
 function createBulkArtifacts(input, config) {
     return __awaiter(this, void 0, void 0, function* () {
         const response = yield (0, node_fetch_1.default)(`${config.vanguardBaseUrl}/api/organization/integrations/github/bulk_artifacts`, {
@@ -37,18 +43,18 @@ function createBulkArtifacts(input, config) {
         }
         else {
             try {
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                return { ok: false, error: (yield response.json()).errors };
+                return {
+                    ok: false,
+                    error: 
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                    (yield response.json()).errors ||
+                        genericCreateBulkArtifactsError
+                };
             }
             catch (_a) {
                 return {
                     ok: false,
-                    error: [
-                        {
-                            error: 'unexpected_error',
-                            message: 'An unexpected error occurred while creating bulk artifacts'
-                        }
-                    ]
+                    error: genericCreateBulkArtifactsError
                 };
             }
         }
@@ -74,7 +80,7 @@ function markBulkArtifactsUploaded(externalIds, config) {
                 error: [
                     {
                         error: 'unexpected_error',
-                        message: 'An unexpected error occurred while creating bulk artifacts'
+                        message: 'An unexpected error occurred while marking bulk artifacts uploaded'
                     }
                 ]
             };
@@ -215,10 +221,11 @@ run();
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.mimeTypeFromExtension = void 0;
 function mimeTypeFromExtension(extension) {
-    if (extension === '.json') {
+    const lowerCaseExtension = extension.toLowerCase();
+    if (lowerCaseExtension.toLowerCase() === '.json') {
         return 'application/json';
     }
-    else if (extension === '.xml') {
+    else if (lowerCaseExtension === '.xml') {
         return 'application/xml';
     }
     throw new Error('Only .json and .xml files are permitted.');

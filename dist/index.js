@@ -19,12 +19,18 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.markBulkArtifactsUploaded = exports.createBulkArtifacts = void 0;
+exports.updateBulkArtifactsStatus = exports.createBulkArtifacts = void 0;
 const node_fetch_1 = __importDefault(__nccwpck_require__(4429));
 const genericCreateBulkArtifactsError = [
     {
         error: 'unexpected_error',
         message: 'An unexpected error occurred while creating bulk artifacts'
+    }
+];
+const genericUpdateBulkArtifactsStatusError = [
+    {
+        error: 'unexpected_error',
+        message: 'An unexpected error occurred while updating bulk artifacts status'
     }
 ];
 function createBulkArtifacts(input, config) {
@@ -61,10 +67,10 @@ function createBulkArtifacts(input, config) {
     });
 }
 exports.createBulkArtifacts = createBulkArtifacts;
-function markBulkArtifactsUploaded(externalIds, config) {
+function updateBulkArtifactsStatus(bulkStatuses, config) {
     return __awaiter(this, void 0, void 0, function* () {
-        const response = yield (0, node_fetch_1.default)(`${config.vanguardBaseUrl}/api/organization/integrations/github/bulk_artifacts/uploaded`, {
-            body: JSON.stringify({ external_ids: externalIds }),
+        const response = yield (0, node_fetch_1.default)(`${config.vanguardBaseUrl}/api/organization/integrations/github/bulk_artifacts/status`, {
+            body: JSON.stringify({ artifacts: bulkStatuses }),
             method: 'PUT',
             headers: {
                 Authorization: `Bearer ${config.vanguardToken}`,
@@ -75,19 +81,25 @@ function markBulkArtifactsUploaded(externalIds, config) {
             return { ok: true, value: null };
         }
         else {
-            return {
-                ok: false,
-                error: [
-                    {
-                        error: 'unexpected_error',
-                        message: 'An unexpected error occurred while marking bulk artifacts uploaded'
-                    }
-                ]
-            };
+            try {
+                return {
+                    ok: false,
+                    error: 
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                    (yield response.json()).errors ||
+                        genericUpdateBulkArtifactsStatusError
+                };
+            }
+            catch (_a) {
+                return {
+                    ok: false,
+                    error: genericUpdateBulkArtifactsStatusError
+                };
+            }
         }
     });
 }
-exports.markBulkArtifactsUploaded = markBulkArtifactsUploaded;
+exports.updateBulkArtifactsStatus = updateBulkArtifactsStatus;
 
 
 /***/ }),
@@ -209,14 +221,25 @@ function run() {
             const failedArtifacts = uploadResponses
                 .filter(([, response]) => !response.ok)
                 .map(([artifact]) => artifact);
-            if (uploadedExternalIds.length) {
-                // intentionally ignore any potential errors here- if it fails,
-                // our server will eventually find out the files were uploaded
-                yield (0, vanguard_1.markBulkArtifactsUploaded)(uploadedExternalIds, {
-                    vanguardBaseUrl: inputs.vanguardBaseUrl,
-                    vanguardToken: inputs.vanguardToken
-                });
-            }
+            // intentionally ignore any potential errors here- if it fails,
+            // our server will eventually find out the files were uploaded
+            yield (0, vanguard_1.updateBulkArtifactsStatus)([
+                uploadedExternalIds.map(externalId => ({
+                    external_id: externalId,
+                    status: 'uploaded'
+                })),
+                failedArtifacts.map(artifact => ({
+                    external_id: artifact.external_id,
+                    status: 'upload_failed'
+                })),
+                artifactsWithoutFiles.map(artifact => ({
+                    external_id: artifact.external_id,
+                    status: 'upload_skipped_file_missing'
+                }))
+            ].flat(), {
+                vanguardBaseUrl: inputs.vanguardBaseUrl,
+                vanguardToken: inputs.vanguardToken
+            });
             if (failedArtifacts.length) {
                 throw new Error(`Some artifacts could not be uploaded:\n\n  Artifacts: ${failedArtifacts
                     .map(artifact => artifact.name)

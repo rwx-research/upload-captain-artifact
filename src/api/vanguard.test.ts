@@ -1,8 +1,9 @@
 import {
   BulkArtifactKind,
   BulkArtifactMimeType,
+  BulkStatus,
   createBulkArtifacts,
-  markBulkArtifactsUploaded
+  updateBulkArtifactsStatus
 } from '../../src/api/vanguard'
 import fetchMock from '../test-utils/fetch-mock'
 
@@ -158,22 +159,29 @@ describe('Vanguard API', () => {
     })
   })
 
-  describe('markBulkArtifactsUploaded', () => {
-    const externalIds = ['id-one', 'id-two']
+  describe('updateBulkArtifactsStatus', () => {
+    const input: BulkStatus[] = [
+      {
+        external_id: 'some-uuid',
+        status: 'uploaded'
+      },
+      {
+        external_id: 'some-other-uuid',
+        status: 'upload_failed'
+      }
+    ]
 
-    it('returns ok when the request is successful', async () => {
+    it('returns the artifacts when the request is successful', async () => {
       fetchMock.putOnce(
         {
-          body: {external_ids: externalIds},
+          body: {artifacts: input},
           headers: {Authorization: 'Bearer fake-token'},
-          url: 'https://vanguard.example.com/api/organization/integrations/github/bulk_artifacts/uploaded'
+          url: 'https://vanguard.example.com/api/organization/integrations/github/bulk_artifacts/status'
         },
-        {
-          status: 204
-        }
+        {status: 204}
       )
 
-      const result = await markBulkArtifactsUploaded(externalIds, {
+      const result = await updateBulkArtifactsStatus(input, {
         vanguardBaseUrl: 'https://vanguard.example.com',
         vanguardToken: 'fake-token'
       })
@@ -181,19 +189,52 @@ describe('Vanguard API', () => {
       expect(result).toEqual({ok: true, value: null})
     })
 
-    it('returns a generic error when the request is not successful', async () => {
+    it('returns the errors when the request is not successful and has errors', async () => {
       fetchMock.putOnce(
         {
-          body: {external_ids: externalIds},
+          body: {artifacts: input},
           headers: {Authorization: 'Bearer fake-token'},
-          url: 'https://vanguard.example.com/api/organization/integrations/github/bulk_artifacts/uploaded'
+          url: 'https://vanguard.example.com/api/organization/integrations/github/bulk_artifacts/status'
         },
         {
+          body: {
+            errors: [
+              {error: 'err-one', message: 'Error one'},
+              {error: 'err-two', message: 'Error two'}
+            ]
+          },
           status: 422
         }
       )
 
-      const result = await markBulkArtifactsUploaded(externalIds, {
+      const result = await updateBulkArtifactsStatus(input, {
+        vanguardBaseUrl: 'https://vanguard.example.com',
+        vanguardToken: 'fake-token'
+      })
+
+      expect(result).toEqual({
+        ok: false,
+        error: [
+          {error: 'err-one', message: 'Error one'},
+          {error: 'err-two', message: 'Error two'}
+        ]
+      })
+    })
+
+    it('returns a generic error when the request is not successful and has no errors', async () => {
+      fetchMock.putOnce(
+        {
+          body: {artifacts: input},
+          headers: {Authorization: 'Bearer fake-token'},
+          url: 'https://vanguard.example.com/api/organization/integrations/github/bulk_artifacts/status'
+        },
+        {
+          body: {},
+          status: 422
+        }
+      )
+
+      const result = await updateBulkArtifactsStatus(input, {
         vanguardBaseUrl: 'https://vanguard.example.com',
         vanguardToken: 'fake-token'
       })
@@ -204,7 +245,37 @@ describe('Vanguard API', () => {
           {
             error: 'unexpected_error',
             message:
-              'An unexpected error occurred while marking bulk artifacts uploaded'
+              'An unexpected error occurred while updating bulk artifacts status'
+          }
+        ]
+      })
+    })
+
+    it('returns a generic error when the request is not successful and has issues parsing json', async () => {
+      fetchMock.putOnce(
+        {
+          body: {artifacts: input},
+          headers: {Authorization: 'Bearer fake-token'},
+          url: 'https://vanguard.example.com/api/organization/integrations/github/bulk_artifacts/status'
+        },
+        {
+          body: 'not json',
+          status: 500
+        }
+      )
+
+      const result = await updateBulkArtifactsStatus(input, {
+        vanguardBaseUrl: 'https://vanguard.example.com',
+        vanguardToken: 'fake-token'
+      })
+
+      expect(result).toEqual({
+        ok: false,
+        error: [
+          {
+            error: 'unexpected_error',
+            message:
+              'An unexpected error occurred while updating bulk artifacts status'
           }
         ]
       })

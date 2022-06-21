@@ -7,7 +7,8 @@ import {
   createBulkArtifacts,
   BulkArtifact,
   BulkArtifactMimeType,
-  markBulkArtifactsUploaded
+  updateBulkArtifactsStatus,
+  BulkArtifactStatus
 } from './api/vanguard'
 import {getInputs, mimeTypeFromExtension, InputArtifact} from './utils'
 
@@ -95,14 +96,28 @@ export default async function run(): Promise<void> {
       .filter(([, response]) => !response.ok)
       .map(([artifact]) => artifact)
 
-    if (uploadedExternalIds.length) {
-      // intentionally ignore any potential errors here- if it fails,
-      // our server will eventually find out the files were uploaded
-      await markBulkArtifactsUploaded(uploadedExternalIds, {
+    // intentionally ignore any potential errors here- if it fails,
+    // our server will eventually find out the files were uploaded
+    await updateBulkArtifactsStatus(
+      [
+        uploadedExternalIds.map(externalId => ({
+          external_id: externalId,
+          status: 'uploaded' as BulkArtifactStatus
+        })),
+        failedArtifacts.map(artifact => ({
+          external_id: artifact.external_id,
+          status: 'upload_failed' as BulkArtifactStatus
+        })),
+        artifactsWithoutFiles.map(artifact => ({
+          external_id: artifact.external_id,
+          status: 'upload_skipped_file_missing' as BulkArtifactStatus
+        }))
+      ].flat(),
+      {
         vanguardBaseUrl: inputs.vanguardBaseUrl,
         vanguardToken: inputs.vanguardToken
-      })
-    }
+      }
+    )
 
     if (failedArtifacts.length) {
       throw new Error(

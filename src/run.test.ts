@@ -94,9 +94,14 @@ describe('run', () => {
 
     fetchMock.putOnce(
       {
-        body: {external_ids: ['uuid-one', 'uuid-two']},
+        body: {
+          artifacts: [
+            {external_id: 'uuid-one', status: 'uploaded'},
+            {external_id: 'uuid-two', status: 'uploaded'}
+          ]
+        },
         headers: {Authorization: 'Bearer fake-token'},
-        url: 'https://vanguard.example.com/api/organization/integrations/github/bulk_artifacts/uploaded'
+        url: 'https://vanguard.example.com/api/organization/integrations/github/bulk_artifacts/status'
       },
       {
         status: 204
@@ -214,7 +219,7 @@ describe('run', () => {
     )
   })
 
-  it('marks the run as a failure when an upload fails, but still marks the uploaded ones as such', async () => {
+  it('marks the run as a failure when an upload fails, but still updates the statuses', async () => {
     const inputs: Inputs = {
       accountName: 'rwx-research',
       artifacts: [
@@ -285,9 +290,14 @@ describe('run', () => {
 
     fetchMock.putOnce(
       {
-        body: {external_ids: ['uuid-one']},
+        body: {
+          artifacts: [
+            {external_id: 'uuid-one', status: 'uploaded'},
+            {external_id: 'uuid-two', status: 'upload_failed'}
+          ]
+        },
         headers: {Authorization: 'Bearer fake-token'},
-        url: 'https://vanguard.example.com/api/organization/integrations/github/bulk_artifacts/uploaded'
+        url: 'https://vanguard.example.com/api/organization/integrations/github/bulk_artifacts/status'
       },
       {
         status: 204
@@ -302,7 +312,7 @@ describe('run', () => {
     )
   })
 
-  it('marks the run as a failure when all uploads fail and does not mark any as uploaded', async () => {
+  it('marks the run as a failure when all uploads fail, but still updates the statuses', async () => {
     const inputs: Inputs = {
       accountName: 'rwx-research',
       artifacts: [
@@ -371,6 +381,22 @@ describe('run', () => {
     fetchMock.putOnce('https://some-s3-url.one', {status: 400})
     fetchMock.putOnce('https://some-s3-url.two', {status: 400})
 
+    fetchMock.putOnce(
+      {
+        body: {
+          artifacts: [
+            {external_id: 'uuid-one', status: 'upload_failed'},
+            {external_id: 'uuid-two', status: 'upload_failed'}
+          ]
+        },
+        headers: {Authorization: 'Bearer fake-token'},
+        url: 'https://vanguard.example.com/api/organization/integrations/github/bulk_artifacts/status'
+      },
+      {
+        status: 204
+      }
+    )
+
     await run()
 
     expect(mockSetFailed).toBeCalledTimes(1)
@@ -379,7 +405,7 @@ describe('run', () => {
     )
   })
 
-  it('does not mark the run as a failure when the mark-uplaoded request fails', async () => {
+  it('does not mark the run as a failure when the update status request fails', async () => {
     const inputs: Inputs = {
       accountName: 'rwx-research',
       artifacts: [
@@ -450,9 +476,14 @@ describe('run', () => {
 
     fetchMock.putOnce(
       {
-        body: {external_ids: ['uuid-one', 'uuid-two']},
+        body: {
+          artifacts: [
+            {external_id: 'uuid-one', status: 'uploaded'},
+            {external_id: 'uuid-two', status: 'uploaded'}
+          ]
+        },
         headers: {Authorization: 'Bearer fake-token'},
-        url: 'https://vanguard.example.com/api/organization/integrations/github/bulk_artifacts/uploaded'
+        url: 'https://vanguard.example.com/api/organization/integrations/github/bulk_artifacts/status'
       },
       {
         status: 500
@@ -531,6 +562,22 @@ describe('run', () => {
         }
       )
 
+      fetchMock.putOnce(
+        {
+          body: {
+            artifacts: [
+              {external_id: 'uuid-one', status: 'upload_skipped_file_missing'},
+              {external_id: 'uuid-two', status: 'upload_skipped_file_missing'}
+            ]
+          },
+          headers: {Authorization: 'Bearer fake-token'},
+          url: 'https://vanguard.example.com/api/organization/integrations/github/bulk_artifacts/status'
+        },
+        {
+          status: 204
+        }
+      )
+
       await run()
 
       expect(mockSetFailed).toBeCalledTimes(0)
@@ -601,6 +648,22 @@ describe('run', () => {
             ]
           },
           status: 201
+        }
+      )
+
+      fetchMock.putOnce(
+        {
+          body: {
+            artifacts: [
+              {external_id: 'uuid-one', status: 'upload_skipped_file_missing'},
+              {external_id: 'uuid-two', status: 'upload_skipped_file_missing'}
+            ]
+          },
+          headers: {Authorization: 'Bearer fake-token'},
+          url: 'https://vanguard.example.com/api/organization/integrations/github/bulk_artifacts/status'
+        },
+        {
+          status: 204
         }
       )
 
@@ -682,6 +745,22 @@ describe('run', () => {
             ]
           },
           status: 201
+        }
+      )
+
+      fetchMock.putOnce(
+        {
+          body: {
+            artifacts: [
+              {external_id: 'uuid-one', status: 'upload_skipped_file_missing'},
+              {external_id: 'uuid-two', status: 'upload_skipped_file_missing'}
+            ]
+          },
+          headers: {Authorization: 'Bearer fake-token'},
+          url: 'https://vanguard.example.com/api/organization/integrations/github/bulk_artifacts/status'
+        },
+        {
+          status: 204
         }
       )
 
@@ -773,9 +852,14 @@ describe('run', () => {
 
       fetchMock.putOnce(
         {
-          body: {external_ids: ['uuid-one']},
+          body: {
+            artifacts: [
+              {external_id: 'uuid-one', status: 'uploaded'},
+              {external_id: 'uuid-two', status: 'upload_skipped_file_missing'}
+            ]
+          },
           headers: {Authorization: 'Bearer fake-token'},
-          url: 'https://vanguard.example.com/api/organization/integrations/github/bulk_artifacts/uploaded'
+          url: 'https://vanguard.example.com/api/organization/integrations/github/bulk_artifacts/status'
         },
         {
           status: 204
@@ -859,9 +943,14 @@ describe('run', () => {
 
       fetchMock.putOnce(
         {
-          body: {external_ids: ['uuid-one']},
+          body: {
+            artifacts: [
+              {external_id: 'uuid-one', status: 'uploaded'},
+              {external_id: 'uuid-two', status: 'upload_skipped_file_missing'}
+            ]
+          },
           headers: {Authorization: 'Bearer fake-token'},
-          url: 'https://vanguard.example.com/api/organization/integrations/github/bulk_artifacts/uploaded'
+          url: 'https://vanguard.example.com/api/organization/integrations/github/bulk_artifacts/status'
         },
         {
           status: 204
@@ -948,9 +1037,14 @@ describe('run', () => {
 
       fetchMock.putOnce(
         {
-          body: {external_ids: ['uuid-one']},
+          body: {
+            artifacts: [
+              {external_id: 'uuid-one', status: 'uploaded'},
+              {external_id: 'uuid-two', status: 'upload_skipped_file_missing'}
+            ]
+          },
           headers: {Authorization: 'Bearer fake-token'},
-          url: 'https://vanguard.example.com/api/organization/integrations/github/bulk_artifacts/uploaded'
+          url: 'https://vanguard.example.com/api/organization/integrations/github/bulk_artifacts/status'
         },
         {
           status: 204

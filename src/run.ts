@@ -9,7 +9,7 @@ import {
   BulkArtifactMimeType,
   updateBulkArtifactsStatus,
   BulkArtifactStatus
-} from './api/vanguard'
+} from './api/captain'
 import {getInputs, mimeTypeFromExtension, InputArtifact} from './utils'
 
 type Artifact = InputArtifact & {
@@ -71,8 +71,8 @@ export default async function run(): Promise<void> {
         run_id: inputs.runId
       },
       {
-        vanguardBaseUrl: inputs.vanguardBaseUrl,
-        vanguardToken: inputs.vanguardToken
+        captainBaseUrl: inputs.captainBaseUrl,
+        captainToken: inputs.captainToken
       }
     )
 
@@ -114,8 +114,8 @@ export default async function run(): Promise<void> {
         }))
       ].flat(),
       {
-        vanguardBaseUrl: inputs.vanguardBaseUrl,
-        vanguardToken: inputs.vanguardToken
+        captainBaseUrl: inputs.captainBaseUrl,
+        captainToken: inputs.captainToken
       }
     )
 

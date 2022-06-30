@@ -24,9 +24,9 @@ type BulkArtifactsInput = {
   repository_name: string
   run_id: string
 }
-type VanguardConfig = {
-  vanguardBaseUrl: string
-  vanguardToken: string
+type CaptainConfig = {
+  captainBaseUrl: string
+  captainToken: string
 }
 
 const genericCreateBulkArtifactsError = [
@@ -45,15 +45,15 @@ const genericUpdateBulkArtifactsStatusError = [
 
 export async function createBulkArtifacts(
   input: BulkArtifactsInput,
-  config: VanguardConfig
+  config: CaptainConfig
 ): Promise<BulkArtifactsResult> {
   const response = await fetch(
-    `${config.vanguardBaseUrl}/api/organization/integrations/github/bulk_artifacts`,
+    `${config.captainBaseUrl}/api/organization/integrations/github/bulk_artifacts`,
     {
       body: JSON.stringify(input),
       method: 'POST',
       headers: {
-        Authorization: `Bearer ${config.vanguardToken}`,
+        Authorization: `Bearer ${config.captainToken}`,
         'Content-Type': 'application/json'
       }
     }
@@ -82,15 +82,15 @@ export async function createBulkArtifacts(
 
 export async function updateBulkArtifactsStatus(
   bulkStatuses: BulkStatus[],
-  config: VanguardConfig
+  config: CaptainConfig
 ): Promise<Result<null, Error[]>> {
   const response = await fetch(
-    `${config.vanguardBaseUrl}/api/organization/integrations/github/bulk_artifacts/status`,
+    `${config.captainBaseUrl}/api/organization/integrations/github/bulk_artifacts/status`,
     {
       body: JSON.stringify({artifacts: bulkStatuses}),
       method: 'PUT',
       headers: {
-        Authorization: `Bearer ${config.vanguardToken}`,
+        Authorization: `Bearer ${config.captainToken}`,
         'Content-Type': 'application/json'
       }
     }

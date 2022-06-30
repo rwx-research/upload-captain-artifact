@@ -41,10 +41,10 @@ describe('run', () => {
       ifFilesNotFound: 'warn',
       jobMatrix: null,
       jobName: 'some-job-name',
-      repositoryName: 'upload-vanguard-artifact',
+      repositoryName: 'upload-captain-artifact',
       runId: '1234',
-      vanguardBaseUrl: 'https://vanguard.example.com',
-      vanguardToken: 'fake-token'
+      captainBaseUrl: 'https://captain.example.com',
+      captainToken: 'fake-token'
     }
     mockGetInputs.mockReturnValueOnce(inputs)
     mockUuid.mockReturnValueOnce('uuid-one').mockReturnValueOnce('uuid-two')
@@ -69,11 +69,11 @@ describe('run', () => {
           ],
           job_name: 'some-job-name',
           job_matrix: null,
-          repository_name: 'upload-vanguard-artifact',
+          repository_name: 'upload-captain-artifact',
           run_id: '1234'
         },
         headers: {Authorization: 'Bearer fake-token'},
-        url: 'https://vanguard.example.com/api/organization/integrations/github/bulk_artifacts'
+        url: 'https://captain.example.com/api/organization/integrations/github/bulk_artifacts'
       },
       {
         body: {
@@ -101,7 +101,7 @@ describe('run', () => {
           ]
         },
         headers: {Authorization: 'Bearer fake-token'},
-        url: 'https://vanguard.example.com/api/organization/integrations/github/bulk_artifacts/status'
+        url: 'https://captain.example.com/api/organization/integrations/github/bulk_artifacts/status'
       },
       {
         status: 204
@@ -132,10 +132,10 @@ describe('run', () => {
       ifFilesNotFound: 'warn',
       jobMatrix: null,
       jobName: 'some-job-name',
-      repositoryName: 'upload-vanguard-artifact',
+      repositoryName: 'upload-captain-artifact',
       runId: '1234',
-      vanguardBaseUrl: 'https://vanguard.example.com',
-      vanguardToken: 'fake-token'
+      captainBaseUrl: 'https://captain.example.com',
+      captainToken: 'fake-token'
     }
     mockGetInputs.mockReturnValueOnce(inputs)
     mockUuid.mockReturnValueOnce('uuid-one').mockReturnValueOnce('uuid-two')
@@ -166,10 +166,10 @@ describe('run', () => {
       ifFilesNotFound: 'warn',
       jobMatrix: null,
       jobName: 'some-job-name',
-      repositoryName: 'upload-vanguard-artifact',
+      repositoryName: 'upload-captain-artifact',
       runId: '1234',
-      vanguardBaseUrl: 'https://vanguard.example.com',
-      vanguardToken: 'fake-token'
+      captainBaseUrl: 'https://captain.example.com',
+      captainToken: 'fake-token'
     }
     mockGetInputs.mockReturnValueOnce(inputs)
     mockUuid.mockReturnValueOnce('uuid-one').mockReturnValueOnce('uuid-two')
@@ -194,11 +194,11 @@ describe('run', () => {
           ],
           job_name: 'some-job-name',
           job_matrix: null,
-          repository_name: 'upload-vanguard-artifact',
+          repository_name: 'upload-captain-artifact',
           run_id: '1234'
         },
         headers: {Authorization: 'Bearer fake-token'},
-        url: 'https://vanguard.example.com/api/organization/integrations/github/bulk_artifacts'
+        url: 'https://captain.example.com/api/organization/integrations/github/bulk_artifacts'
       },
       {
         body: {
@@ -237,10 +237,10 @@ describe('run', () => {
       ifFilesNotFound: 'warn',
       jobMatrix: null,
       jobName: 'some-job-name',
-      repositoryName: 'upload-vanguard-artifact',
+      repositoryName: 'upload-captain-artifact',
       runId: '1234',
-      vanguardBaseUrl: 'https://vanguard.example.com',
-      vanguardToken: 'fake-token'
+      captainBaseUrl: 'https://captain.example.com',
+      captainToken: 'fake-token'
     }
     mockGetInputs.mockReturnValueOnce(inputs)
     mockUuid.mockReturnValueOnce('uuid-one').mockReturnValueOnce('uuid-two')
@@ -265,11 +265,11 @@ describe('run', () => {
           ],
           job_name: 'some-job-name',
           job_matrix: null,
-          repository_name: 'upload-vanguard-artifact',
+          repository_name: 'upload-captain-artifact',
           run_id: '1234'
         },
         headers: {Authorization: 'Bearer fake-token'},
-        url: 'https://vanguard.example.com/api/organization/integrations/github/bulk_artifacts'
+        url: 'https://captain.example.com/api/organization/integrations/github/bulk_artifacts'
       },
       {
         body: {
@@ -297,7 +297,7 @@ describe('run', () => {
           ]
         },
         headers: {Authorization: 'Bearer fake-token'},
-        url: 'https://vanguard.example.com/api/organization/integrations/github/bulk_artifacts/status'
+        url: 'https://captain.example.com/api/organization/integrations/github/bulk_artifacts/status'
       },
       {
         status: 204
@@ -330,10 +330,10 @@ describe('run', () => {
       ifFilesNotFound: 'warn',
       jobMatrix: null,
       jobName: 'some-job-name',
-      repositoryName: 'upload-vanguard-artifact',
+      repositoryName: 'upload-captain-artifact',
       runId: '1234',
-      vanguardBaseUrl: 'https://vanguard.example.com',
-      vanguardToken: 'fake-token'
+      captainBaseUrl: 'https://captain.example.com',
+      captainToken: 'fake-token'
     }
     mockGetInputs.mockReturnValueOnce(inputs)
     mockUuid.mockReturnValueOnce('uuid-one').mockReturnValueOnce('uuid-two')
@@ -358,11 +358,11 @@ describe('run', () => {
           ],
           job_name: 'some-job-name',
           job_matrix: null,
-          repository_name: 'upload-vanguard-artifact',
+          repository_name: 'upload-captain-artifact',
           run_id: '1234'
         },
         headers: {Authorization: 'Bearer fake-token'},
-        url: 'https://vanguard.example.com/api/organization/integrations/github/bulk_artifacts'
+        url: 'https://captain.example.com/api/organization/integrations/github/bulk_artifacts'
       },
       {
         body: {
@@ -390,7 +390,7 @@ describe('run', () => {
           ]
         },
         headers: {Authorization: 'Bearer fake-token'},
-        url: 'https://vanguard.example.com/api/organization/integrations/github/bulk_artifacts/status'
+        url: 'https://captain.example.com/api/organization/integrations/github/bulk_artifacts/status'
       },
       {
         status: 204
@@ -423,10 +423,10 @@ describe('run', () => {
       ifFilesNotFound: 'warn',
       jobMatrix: null,
       jobName: 'some-job-name',
-      repositoryName: 'upload-vanguard-artifact',
+      repositoryName: 'upload-captain-artifact',
       runId: '1234',
-      vanguardBaseUrl: 'https://vanguard.example.com',
-      vanguardToken: 'fake-token'
+      captainBaseUrl: 'https://captain.example.com',
+      captainToken: 'fake-token'
     }
     mockGetInputs.mockReturnValueOnce(inputs)
     mockUuid.mockReturnValueOnce('uuid-one').mockReturnValueOnce('uuid-two')
@@ -451,11 +451,11 @@ describe('run', () => {
           ],
           job_name: 'some-job-name',
           job_matrix: null,
-          repository_name: 'upload-vanguard-artifact',
+          repository_name: 'upload-captain-artifact',
           run_id: '1234'
         },
         headers: {Authorization: 'Bearer fake-token'},
-        url: 'https://vanguard.example.com/api/organization/integrations/github/bulk_artifacts'
+        url: 'https://captain.example.com/api/organization/integrations/github/bulk_artifacts'
       },
       {
         body: {
@@ -483,7 +483,7 @@ describe('run', () => {
           ]
         },
         headers: {Authorization: 'Bearer fake-token'},
-        url: 'https://vanguard.example.com/api/organization/integrations/github/bulk_artifacts/status'
+        url: 'https://captain.example.com/api/organization/integrations/github/bulk_artifacts/status'
       },
       {
         status: 500
@@ -514,10 +514,10 @@ describe('run', () => {
         ifFilesNotFound: 'ignore',
         jobMatrix: null,
         jobName: 'some-job-name',
-        repositoryName: 'upload-vanguard-artifact',
+        repositoryName: 'upload-captain-artifact',
         runId: '1234',
-        vanguardBaseUrl: 'https://vanguard.example.com',
-        vanguardToken: 'fake-token'
+        captainBaseUrl: 'https://captain.example.com',
+        captainToken: 'fake-token'
       }
       mockGetInputs.mockReturnValueOnce(inputs)
       mockUuid.mockReturnValueOnce('uuid-one').mockReturnValueOnce('uuid-two')
@@ -542,11 +542,11 @@ describe('run', () => {
             ],
             job_name: 'some-job-name',
             job_matrix: null,
-            repository_name: 'upload-vanguard-artifact',
+            repository_name: 'upload-captain-artifact',
             run_id: '1234'
           },
           headers: {Authorization: 'Bearer fake-token'},
-          url: 'https://vanguard.example.com/api/organization/integrations/github/bulk_artifacts'
+          url: 'https://captain.example.com/api/organization/integrations/github/bulk_artifacts'
         },
         {
           body: {
@@ -571,7 +571,7 @@ describe('run', () => {
             ]
           },
           headers: {Authorization: 'Bearer fake-token'},
-          url: 'https://vanguard.example.com/api/organization/integrations/github/bulk_artifacts/status'
+          url: 'https://captain.example.com/api/organization/integrations/github/bulk_artifacts/status'
         },
         {
           status: 204
@@ -603,10 +603,10 @@ describe('run', () => {
         ifFilesNotFound: 'warn',
         jobMatrix: null,
         jobName: 'some-job-name',
-        repositoryName: 'upload-vanguard-artifact',
+        repositoryName: 'upload-captain-artifact',
         runId: '1234',
-        vanguardBaseUrl: 'https://vanguard.example.com',
-        vanguardToken: 'fake-token'
+        captainBaseUrl: 'https://captain.example.com',
+        captainToken: 'fake-token'
       }
       mockGetInputs.mockReturnValueOnce(inputs)
       mockUuid.mockReturnValueOnce('uuid-one').mockReturnValueOnce('uuid-two')
@@ -631,11 +631,11 @@ describe('run', () => {
             ],
             job_name: 'some-job-name',
             job_matrix: null,
-            repository_name: 'upload-vanguard-artifact',
+            repository_name: 'upload-captain-artifact',
             run_id: '1234'
           },
           headers: {Authorization: 'Bearer fake-token'},
-          url: 'https://vanguard.example.com/api/organization/integrations/github/bulk_artifacts'
+          url: 'https://captain.example.com/api/organization/integrations/github/bulk_artifacts'
         },
         {
           body: {
@@ -660,7 +660,7 @@ describe('run', () => {
             ]
           },
           headers: {Authorization: 'Bearer fake-token'},
-          url: 'https://vanguard.example.com/api/organization/integrations/github/bulk_artifacts/status'
+          url: 'https://captain.example.com/api/organization/integrations/github/bulk_artifacts/status'
         },
         {
           status: 204
@@ -700,10 +700,10 @@ describe('run', () => {
         ifFilesNotFound: 'error',
         jobMatrix: null,
         jobName: 'some-job-name',
-        repositoryName: 'upload-vanguard-artifact',
+        repositoryName: 'upload-captain-artifact',
         runId: '1234',
-        vanguardBaseUrl: 'https://vanguard.example.com',
-        vanguardToken: 'fake-token'
+        captainBaseUrl: 'https://captain.example.com',
+        captainToken: 'fake-token'
       }
       mockGetInputs.mockReturnValueOnce(inputs)
       mockUuid.mockReturnValueOnce('uuid-one').mockReturnValueOnce('uuid-two')
@@ -728,11 +728,11 @@ describe('run', () => {
             ],
             job_name: 'some-job-name',
             job_matrix: null,
-            repository_name: 'upload-vanguard-artifact',
+            repository_name: 'upload-captain-artifact',
             run_id: '1234'
           },
           headers: {Authorization: 'Bearer fake-token'},
-          url: 'https://vanguard.example.com/api/organization/integrations/github/bulk_artifacts'
+          url: 'https://captain.example.com/api/organization/integrations/github/bulk_artifacts'
         },
         {
           body: {
@@ -757,7 +757,7 @@ describe('run', () => {
             ]
           },
           headers: {Authorization: 'Bearer fake-token'},
-          url: 'https://vanguard.example.com/api/organization/integrations/github/bulk_artifacts/status'
+          url: 'https://captain.example.com/api/organization/integrations/github/bulk_artifacts/status'
         },
         {
           status: 204
@@ -800,10 +800,10 @@ describe('run', () => {
         ifFilesNotFound: 'ignore',
         jobMatrix: null,
         jobName: 'some-job-name',
-        repositoryName: 'upload-vanguard-artifact',
+        repositoryName: 'upload-captain-artifact',
         runId: '1234',
-        vanguardBaseUrl: 'https://vanguard.example.com',
-        vanguardToken: 'fake-token'
+        captainBaseUrl: 'https://captain.example.com',
+        captainToken: 'fake-token'
       }
       mockGetInputs.mockReturnValueOnce(inputs)
       mockUuid.mockReturnValueOnce('uuid-one').mockReturnValueOnce('uuid-two')
@@ -828,11 +828,11 @@ describe('run', () => {
             ],
             job_name: 'some-job-name',
             job_matrix: null,
-            repository_name: 'upload-vanguard-artifact',
+            repository_name: 'upload-captain-artifact',
             run_id: '1234'
           },
           headers: {Authorization: 'Bearer fake-token'},
-          url: 'https://vanguard.example.com/api/organization/integrations/github/bulk_artifacts'
+          url: 'https://captain.example.com/api/organization/integrations/github/bulk_artifacts'
         },
         {
           body: {
@@ -859,7 +859,7 @@ describe('run', () => {
             ]
           },
           headers: {Authorization: 'Bearer fake-token'},
-          url: 'https://vanguard.example.com/api/organization/integrations/github/bulk_artifacts/status'
+          url: 'https://captain.example.com/api/organization/integrations/github/bulk_artifacts/status'
         },
         {
           status: 204
@@ -891,10 +891,10 @@ describe('run', () => {
         ifFilesNotFound: 'warn',
         jobMatrix: null,
         jobName: 'some-job-name',
-        repositoryName: 'upload-vanguard-artifact',
+        repositoryName: 'upload-captain-artifact',
         runId: '1234',
-        vanguardBaseUrl: 'https://vanguard.example.com',
-        vanguardToken: 'fake-token'
+        captainBaseUrl: 'https://captain.example.com',
+        captainToken: 'fake-token'
       }
       mockGetInputs.mockReturnValueOnce(inputs)
       mockUuid.mockReturnValueOnce('uuid-one').mockReturnValueOnce('uuid-two')
@@ -919,11 +919,11 @@ describe('run', () => {
             ],
             job_name: 'some-job-name',
             job_matrix: null,
-            repository_name: 'upload-vanguard-artifact',
+            repository_name: 'upload-captain-artifact',
             run_id: '1234'
           },
           headers: {Authorization: 'Bearer fake-token'},
-          url: 'https://vanguard.example.com/api/organization/integrations/github/bulk_artifacts'
+          url: 'https://captain.example.com/api/organization/integrations/github/bulk_artifacts'
         },
         {
           body: {
@@ -950,7 +950,7 @@ describe('run', () => {
             ]
           },
           headers: {Authorization: 'Bearer fake-token'},
-          url: 'https://vanguard.example.com/api/organization/integrations/github/bulk_artifacts/status'
+          url: 'https://captain.example.com/api/organization/integrations/github/bulk_artifacts/status'
         },
         {
           status: 204
@@ -985,10 +985,10 @@ describe('run', () => {
         ifFilesNotFound: 'error',
         jobMatrix: null,
         jobName: 'some-job-name',
-        repositoryName: 'upload-vanguard-artifact',
+        repositoryName: 'upload-captain-artifact',
         runId: '1234',
-        vanguardBaseUrl: 'https://vanguard.example.com',
-        vanguardToken: 'fake-token'
+        captainBaseUrl: 'https://captain.example.com',
+        captainToken: 'fake-token'
       }
       mockGetInputs.mockReturnValueOnce(inputs)
       mockUuid.mockReturnValueOnce('uuid-one').mockReturnValueOnce('uuid-two')
@@ -1013,11 +1013,11 @@ describe('run', () => {
             ],
             job_name: 'some-job-name',
             job_matrix: null,
-            repository_name: 'upload-vanguard-artifact',
+            repository_name: 'upload-captain-artifact',
             run_id: '1234'
           },
           headers: {Authorization: 'Bearer fake-token'},
-          url: 'https://vanguard.example.com/api/organization/integrations/github/bulk_artifacts'
+          url: 'https://captain.example.com/api/organization/integrations/github/bulk_artifacts'
         },
         {
           body: {
@@ -1044,7 +1044,7 @@ describe('run', () => {
             ]
           },
           headers: {Authorization: 'Bearer fake-token'},
-          url: 'https://vanguard.example.com/api/organization/integrations/github/bulk_artifacts/status'
+          url: 'https://captain.example.com/api/organization/integrations/github/bulk_artifacts/status'
         },
         {
           status: 204

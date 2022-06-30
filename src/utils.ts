@@ -1,6 +1,6 @@
 import * as core from '@actions/core'
 import * as github from '@actions/github'
-import {BulkArtifactKind, BulkArtifactMimeType} from './api/vanguard'
+import {BulkArtifactKind, BulkArtifactMimeType} from './api/captain'
 
 export type InputArtifact = {
   kind: BulkArtifactKind
@@ -16,8 +16,8 @@ export type Inputs = {
   jobName: string
   repositoryName: string
   runId: string
-  vanguardBaseUrl: string
-  vanguardToken: string
+  captainBaseUrl: string
+  captainToken: string
 }
 
 export function mimeTypeFromExtension(extension: string): BulkArtifactMimeType {
@@ -51,7 +51,7 @@ export function getInputs(): Inputs {
     jobName: core.getInput('job-name') || github.context.job,
     repositoryName: github.context.repo.repo,
     runId: github.context.runId.toString(),
-    vanguardBaseUrl: core.getInput('vanguard-base-url'),
-    vanguardToken: core.getInput('vanguard-token')
+    captainBaseUrl: core.getInput('captain-base-url'),
+    captainToken: core.getInput('captain-token')
   }
 }

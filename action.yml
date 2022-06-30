@@ -1,5 +1,5 @@
-name: Upload Vanguard Artifact
-description: Upload artifacts to Vanguard
+name: Upload Captain Artifact
+description: Upload artifacts to Captain
 author: RWX
 inputs:
   artifacts:
@@ -21,11 +21,11 @@ inputs:
       If you provided a name, set that same value here.
   job-matrix:
     required: true
-  vanguard-token:
+  captain-token:
     required: true
-  vanguard-base-url:
+  captain-base-url:
     required: false
-    default: https://vanguard.rwx.com
+    default: https://captain.rwx.com
 runs:
   using: 'node16'
   main: 'dist/index.js'

@@ -21,7 +21,7 @@ jobs:
             git diff
             exit 1
           fi
-      - name: Upload artifacts to vanguard production
+      - name: Upload artifacts to captain production
         uses: ./
         with:
           artifacts: |
@@ -33,8 +33,8 @@ jobs:
               }
             ]
           job-matrix: "${{ toJSON(matrix) }}"
-          vanguard-token: "${{ secrets.VANGUARD_PRODUCTION_RWX_TOKEN }}"
-      - name: Upload artifacts to vanguard staging
+          captain-token: "${{ secrets.VANGUARD_PRODUCTION_RWX_TOKEN }}"
+      - name: Upload artifacts to captain staging
         uses: ./
         with:
           artifacts: |
@@ -46,5 +46,5 @@ jobs:
               }
             ]
           job-matrix: "${{ toJSON(matrix) }}"
-          vanguard-token: "${{ secrets.VANGUARD_STAGING_RWX_TOKEN }}"
-          vanguard-base-url: "${{ secrets.VANGUARD_STAGING_BASE_URL }}"
+          captain-token: "${{ secrets.VANGUARD_STAGING_RWX_TOKEN }}"
+          captain-base-url: "${{ secrets.VANGUARD_STAGING_BASE_URL }}"

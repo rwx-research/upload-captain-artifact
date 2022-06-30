@@ -1,7 +1,7 @@
 require('./sourcemap-register.js');/******/ (() => { // webpackBootstrap
 /******/ 	var __webpack_modules__ = ({
 
-/***/ 7210:
+/***/ 1956:
 /***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
 "use strict";
@@ -35,11 +35,11 @@ const genericUpdateBulkArtifactsStatusError = [
 ];
 function createBulkArtifacts(input, config) {
     return __awaiter(this, void 0, void 0, function* () {
-        const response = yield (0, node_fetch_1.default)(`${config.vanguardBaseUrl}/api/organization/integrations/github/bulk_artifacts`, {
+        const response = yield (0, node_fetch_1.default)(`${config.captainBaseUrl}/api/organization/integrations/github/bulk_artifacts`, {
             body: JSON.stringify(input),
             method: 'POST',
             headers: {
-                Authorization: `Bearer ${config.vanguardToken}`,
+                Authorization: `Bearer ${config.captainToken}`,
                 'Content-Type': 'application/json'
             }
         });
@@ -69,11 +69,11 @@ function createBulkArtifacts(input, config) {
 exports.createBulkArtifacts = createBulkArtifacts;
 function updateBulkArtifactsStatus(bulkStatuses, config) {
     return __awaiter(this, void 0, void 0, function* () {
-        const response = yield (0, node_fetch_1.default)(`${config.vanguardBaseUrl}/api/organization/integrations/github/bulk_artifacts/status`, {
+        const response = yield (0, node_fetch_1.default)(`${config.captainBaseUrl}/api/organization/integrations/github/bulk_artifacts/status`, {
             body: JSON.stringify({ artifacts: bulkStatuses }),
             method: 'PUT',
             headers: {
-                Authorization: `Bearer ${config.vanguardToken}`,
+                Authorization: `Bearer ${config.captainToken}`,
                 'Content-Type': 'application/json'
             }
         });
@@ -165,7 +165,7 @@ const path_1 = __nccwpck_require__(1017);
 const node_fetch_1 = __importDefault(__nccwpck_require__(4429));
 const fs_1 = __nccwpck_require__(7147);
 const uuid_1 = __nccwpck_require__(5840);
-const vanguard_1 = __nccwpck_require__(7210);
+const captain_1 = __nccwpck_require__(1956);
 const utils_1 = __nccwpck_require__(918);
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
@@ -193,7 +193,7 @@ function run() {
                     core.setFailed('Artifact(s) are missing file(s)');
                 }
             }
-            const bulkArtifactsResult = yield (0, vanguard_1.createBulkArtifacts)({
+            const bulkArtifactsResult = yield (0, captain_1.createBulkArtifacts)({
                 account_name: inputs.accountName,
                 artifacts: artifacts.map(artifact => ({
                     kind: artifact.kind,
@@ -206,8 +206,8 @@ function run() {
                 repository_name: inputs.repositoryName,
                 run_id: inputs.runId
             }, {
-                vanguardBaseUrl: inputs.vanguardBaseUrl,
-                vanguardToken: inputs.vanguardToken
+                captainBaseUrl: inputs.captainBaseUrl,
+                captainToken: inputs.captainToken
             });
             if (!bulkArtifactsResult.ok) {
                 throw new Error(`Bulk artifacts POST failed:\n\n  - Errors: ${bulkArtifactsResult.error
@@ -223,7 +223,7 @@ function run() {
                 .map(([artifact]) => artifact);
             // intentionally ignore any potential errors here- if it fails,
             // our server will eventually find out the files were uploaded
-            yield (0, vanguard_1.updateBulkArtifactsStatus)([
+            yield (0, captain_1.updateBulkArtifactsStatus)([
                 uploadedExternalIds.map(externalId => ({
                     external_id: externalId,
                     status: 'uploaded'
@@ -237,8 +237,8 @@ function run() {
                     status: 'upload_skipped_file_missing'
                 }))
             ].flat(), {
-                vanguardBaseUrl: inputs.vanguardBaseUrl,
-                vanguardToken: inputs.vanguardToken
+                captainBaseUrl: inputs.captainBaseUrl,
+                captainToken: inputs.captainToken
             });
             if (failedArtifacts.length) {
                 throw new Error(`Some artifacts could not be uploaded:\n\n  Artifacts: ${failedArtifacts
@@ -331,8 +331,8 @@ function getInputs() {
         jobName: core.getInput('job-name') || github.context.job,
         repositoryName: github.context.repo.repo,
         runId: github.context.runId.toString(),
-        vanguardBaseUrl: core.getInput('vanguard-base-url'),
-        vanguardToken: core.getInput('vanguard-token')
+        captainBaseUrl: core.getInput('captain-base-url'),
+        captainToken: core.getInput('captain-token')
     };
 }
 exports.getInputs = getInputs;

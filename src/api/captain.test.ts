@@ -4,10 +4,10 @@ import {
   BulkStatus,
   createBulkArtifacts,
   updateBulkArtifactsStatus
-} from '../../src/api/vanguard'
+} from './captain'
 import fetchMock from '../test-utils/fetch-mock'
 
-describe('Vanguard API', () => {
+describe('Captain API', () => {
   describe('createBulkArtifacts', () => {
     const input = {
       account_name: 'rwx-research',
@@ -27,7 +27,7 @@ describe('Vanguard API', () => {
       ],
       job_name: 'test-and-lint',
       job_matrix: null,
-      repository_name: 'upload-vanguard-artifact',
+      repository_name: 'upload-captain-artifact',
       run_id: 'run-123'
     }
 
@@ -36,7 +36,7 @@ describe('Vanguard API', () => {
         {
           body: input,
           headers: {Authorization: 'Bearer fake-token'},
-          url: 'https://vanguard.example.com/api/organization/integrations/github/bulk_artifacts'
+          url: 'https://captain.example.com/api/organization/integrations/github/bulk_artifacts'
         },
         {
           body: {
@@ -53,8 +53,8 @@ describe('Vanguard API', () => {
       )
 
       const result = await createBulkArtifacts(input, {
-        vanguardBaseUrl: 'https://vanguard.example.com',
-        vanguardToken: 'fake-token'
+        captainBaseUrl: 'https://captain.example.com',
+        captainToken: 'fake-token'
       })
 
       expect(result).toEqual({
@@ -71,7 +71,7 @@ describe('Vanguard API', () => {
         {
           body: input,
           headers: {Authorization: 'Bearer fake-token'},
-          url: 'https://vanguard.example.com/api/organization/integrations/github/bulk_artifacts'
+          url: 'https://captain.example.com/api/organization/integrations/github/bulk_artifacts'
         },
         {
           body: {
@@ -85,8 +85,8 @@ describe('Vanguard API', () => {
       )
 
       const result = await createBulkArtifacts(input, {
-        vanguardBaseUrl: 'https://vanguard.example.com',
-        vanguardToken: 'fake-token'
+        captainBaseUrl: 'https://captain.example.com',
+        captainToken: 'fake-token'
       })
 
       expect(result).toEqual({
@@ -103,7 +103,7 @@ describe('Vanguard API', () => {
         {
           body: input,
           headers: {Authorization: 'Bearer fake-token'},
-          url: 'https://vanguard.example.com/api/organization/integrations/github/bulk_artifacts'
+          url: 'https://captain.example.com/api/organization/integrations/github/bulk_artifacts'
         },
         {
           body: {},
@@ -112,8 +112,8 @@ describe('Vanguard API', () => {
       )
 
       const result = await createBulkArtifacts(input, {
-        vanguardBaseUrl: 'https://vanguard.example.com',
-        vanguardToken: 'fake-token'
+        captainBaseUrl: 'https://captain.example.com',
+        captainToken: 'fake-token'
       })
 
       expect(result).toEqual({
@@ -133,7 +133,7 @@ describe('Vanguard API', () => {
         {
           body: input,
           headers: {Authorization: 'Bearer fake-token'},
-          url: 'https://vanguard.example.com/api/organization/integrations/github/bulk_artifacts'
+          url: 'https://captain.example.com/api/organization/integrations/github/bulk_artifacts'
         },
         {
           body: 'not json',
@@ -142,8 +142,8 @@ describe('Vanguard API', () => {
       )
 
       const result = await createBulkArtifacts(input, {
-        vanguardBaseUrl: 'https://vanguard.example.com',
-        vanguardToken: 'fake-token'
+        captainBaseUrl: 'https://captain.example.com',
+        captainToken: 'fake-token'
       })
 
       expect(result).toEqual({
@@ -176,14 +176,14 @@ describe('Vanguard API', () => {
         {
           body: {artifacts: input},
           headers: {Authorization: 'Bearer fake-token'},
-          url: 'https://vanguard.example.com/api/organization/integrations/github/bulk_artifacts/status'
+          url: 'https://captain.example.com/api/organization/integrations/github/bulk_artifacts/status'
         },
         {status: 204}
       )
 
       const result = await updateBulkArtifactsStatus(input, {
-        vanguardBaseUrl: 'https://vanguard.example.com',
-        vanguardToken: 'fake-token'
+        captainBaseUrl: 'https://captain.example.com',
+        captainToken: 'fake-token'
       })
 
       expect(result).toEqual({ok: true, value: null})
@@ -194,7 +194,7 @@ describe('Vanguard API', () => {
         {
           body: {artifacts: input},
           headers: {Authorization: 'Bearer fake-token'},
-          url: 'https://vanguard.example.com/api/organization/integrations/github/bulk_artifacts/status'
+          url: 'https://captain.example.com/api/organization/integrations/github/bulk_artifacts/status'
         },
         {
           body: {
@@ -208,8 +208,8 @@ describe('Vanguard API', () => {
       )
 
       const result = await updateBulkArtifactsStatus(input, {
-        vanguardBaseUrl: 'https://vanguard.example.com',
-        vanguardToken: 'fake-token'
+        captainBaseUrl: 'https://captain.example.com',
+        captainToken: 'fake-token'
       })
 
       expect(result).toEqual({
@@ -226,7 +226,7 @@ describe('Vanguard API', () => {
         {
           body: {artifacts: input},
           headers: {Authorization: 'Bearer fake-token'},
-          url: 'https://vanguard.example.com/api/organization/integrations/github/bulk_artifacts/status'
+          url: 'https://captain.example.com/api/organization/integrations/github/bulk_artifacts/status'
         },
         {
           body: {},
@@ -235,8 +235,8 @@ describe('Vanguard API', () => {
       )
 
       const result = await updateBulkArtifactsStatus(input, {
-        vanguardBaseUrl: 'https://vanguard.example.com',
-        vanguardToken: 'fake-token'
+        captainBaseUrl: 'https://captain.example.com',
+        captainToken: 'fake-token'
       })
 
       expect(result).toEqual({
@@ -256,7 +256,7 @@ describe('Vanguard API', () => {
         {
           body: {artifacts: input},
           headers: {Authorization: 'Bearer fake-token'},
-          url: 'https://vanguard.example.com/api/organization/integrations/github/bulk_artifacts/status'
+          url: 'https://captain.example.com/api/organization/integrations/github/bulk_artifacts/status'
         },
         {
           body: 'not json',
@@ -265,8 +265,8 @@ describe('Vanguard API', () => {
       )
 
       const result = await updateBulkArtifactsStatus(input, {
-        vanguardBaseUrl: 'https://vanguard.example.com',
-        vanguardToken: 'fake-token'
+        captainBaseUrl: 'https://captain.example.com',
+        captainToken: 'fake-token'
       })
 
       expect(result).toEqual({

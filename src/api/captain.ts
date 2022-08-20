@@ -15,7 +15,7 @@ type BulkArtifactsInput = {
   account_name: string
   artifacts: {
     kind: string
-    name: string
+    filename: string
     mime_type: BulkArtifactMimeType
     external_id: string
   }[]

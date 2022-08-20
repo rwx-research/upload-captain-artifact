@@ -171,7 +171,13 @@ function run() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             const inputs = (0, utils_1.getInputs)();
-            const artifacts = inputs.artifacts.map(artifact => (Object.assign(Object.assign({}, artifact), { mime_type: (0, utils_1.mimeTypeFromExtension)((0, path_1.extname)(artifact.path).toLowerCase()), external_id: (0, uuid_1.v4)() })));
+            const artifacts = inputs.artifacts.map(artifact => ({
+                path: artifact.path,
+                kind: artifact.kind,
+                filename: artifact.save_as || artifact.path.split('/').pop() || 'file',
+                mime_type: (0, utils_1.mimeTypeFromExtension)((0, path_1.extname)(artifact.path).toLowerCase()),
+                external_id: (0, uuid_1.v4)()
+            }));
             const [artifactsWithFiles, artifactsWithoutFiles] = artifacts.reduce(([withFiles, withoutFiles], artifact) => {
                 if ((0, fs_1.existsSync)(artifact.path)) {
                     return [[...withFiles, artifact], withoutFiles];
@@ -182,12 +188,12 @@ function run() {
             }, [[], []]);
             if (inputs.ifFilesNotFound === 'warn') {
                 for (const artifact of artifactsWithoutFiles) {
-                    core.warning(`Artifact file not found at '${artifact.path}' for artifact '${artifact.name}'`);
+                    core.warning(`Artifact file not found at '${artifact.path}'`);
                 }
             }
             else if (inputs.ifFilesNotFound === 'error') {
                 for (const artifact of artifactsWithoutFiles) {
-                    core.error(`Artifact file not found at '${artifact.path}' for artifact '${artifact.name}'`);
+                    core.error(`Artifact file not found at '${artifact.path}'`);
                 }
                 if (artifactsWithoutFiles.length) {
                     core.setFailed('Artifact(s) are missing file(s)');
@@ -197,7 +203,7 @@ function run() {
                 account_name: inputs.accountName,
                 artifacts: artifacts.map(artifact => ({
                     kind: artifact.kind,
-                    name: artifact.name,
+                    filename: artifact.filename,
                     mime_type: artifact.mime_type,
                     external_id: artifact.external_id
                 })),
@@ -242,7 +248,7 @@ function run() {
             });
             if (failedArtifacts.length) {
                 throw new Error(`Some artifacts could not be uploaded:\n\n  Artifacts: ${failedArtifacts
-                    .map(artifact => artifact.name)
+                    .map(artifact => artifact.path)
                     .join(', ')}`);
             }
         }

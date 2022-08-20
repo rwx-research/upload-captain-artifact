@@ -14,13 +14,13 @@ describe('Captain API', () => {
       artifacts: [
         {
           kind: 'test_results' as BulkArtifactKind,
-          name: 'Jest JUnit',
+          filename: 'Jest JUnit.xml',
           mime_type: 'application/json' as BulkArtifactMimeType,
           external_id: 'some-uuid'
         },
         {
           kind: 'test_results' as BulkArtifactKind,
-          name: 'Jest Something Else',
+          filename: 'Jest Something Else.xml',
           mime_type: 'application/xml' as BulkArtifactMimeType,
           external_id: 'some-other-uuid'
         }

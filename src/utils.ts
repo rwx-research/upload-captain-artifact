@@ -4,7 +4,7 @@ import {BulkArtifactKind, BulkArtifactMimeType} from './api/captain'
 
 export type InputArtifact = {
   kind: BulkArtifactKind
-  name: string
+  save_as?: string
   path: string
 }
 export type IfFilesNotFound = 'ignore' | 'warn' | 'error'

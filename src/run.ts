@@ -8,11 +8,15 @@ import {
   BulkArtifact,
   BulkArtifactMimeType,
   updateBulkArtifactsStatus,
+  BulkArtifactKind,
   BulkArtifactStatus
 } from './api/captain'
-import {getInputs, mimeTypeFromExtension, InputArtifact} from './utils'
+import {getInputs, mimeTypeFromExtension} from './utils'
 
-type Artifact = InputArtifact & {
+type Artifact = {
+  kind: BulkArtifactKind
+  path: string
+  filename: string
   mime_type: BulkArtifactMimeType
   external_id: string
 }
@@ -21,7 +25,9 @@ export default async function run(): Promise<void> {
   try {
     const inputs = getInputs()
     const artifacts: Artifact[] = inputs.artifacts.map(artifact => ({
-      ...artifact,
+      path: artifact.path,
+      kind: artifact.kind,
+      filename: artifact.save_as || artifact.path.split('/').pop() || 'file',
       mime_type: mimeTypeFromExtension(extname(artifact.path).toLowerCase()),
       external_id: uuidv4()
     }))
@@ -41,15 +47,11 @@ export default async function run(): Promise<void> {
 
     if (inputs.ifFilesNotFound === 'warn') {
       for (const artifact of artifactsWithoutFiles) {
-        core.warning(
-          `Artifact file not found at '${artifact.path}' for artifact '${artifact.name}'`
-        )
+        core.warning(`Artifact file not found at '${artifact.path}'`)
       }
     } else if (inputs.ifFilesNotFound === 'error') {
       for (const artifact of artifactsWithoutFiles) {
-        core.error(
-          `Artifact file not found at '${artifact.path}' for artifact '${artifact.name}'`
-        )
+        core.error(`Artifact file not found at '${artifact.path}'`)
       }
       if (artifactsWithoutFiles.length) {
         core.setFailed('Artifact(s) are missing file(s)')
@@ -61,7 +63,7 @@ export default async function run(): Promise<void> {
         account_name: inputs.accountName,
         artifacts: artifacts.map(artifact => ({
           kind: artifact.kind,
-          name: artifact.name,
+          filename: artifact.filename,
           mime_type: artifact.mime_type,
           external_id: artifact.external_id
         })),
@@ -122,7 +124,7 @@ export default async function run(): Promise<void> {
     if (failedArtifacts.length) {
       throw new Error(
         `Some artifacts could not be uploaded:\n\n  Artifacts: ${failedArtifacts
-          .map(artifact => artifact.name)
+          .map(artifact => artifact.path)
           .join(', ')}`
       )
     }

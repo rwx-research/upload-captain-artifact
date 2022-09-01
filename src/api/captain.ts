@@ -9,6 +9,7 @@ export type BulkArtifactStatus =
 export type BulkStatus = {external_id: string; status: BulkArtifactStatus}
 export type BulkArtifact = {external_id: string; upload_url: string}
 export type BulkArtifactMimeType = 'application/json' | 'application/xml'
+export type BulkArtifactParser = 'cypress_json' | 'junit_xml' | 'rspec_json'
 export type BulkArtifactKind = 'test_results'
 type BulkArtifactsResult = Result<BulkArtifact[], Error[]>
 type BulkArtifactsInput = {
@@ -16,6 +17,7 @@ type BulkArtifactsInput = {
   artifacts: {
     kind: string
     name: string
+    parser?: BulkArtifactParser
     mime_type: BulkArtifactMimeType
     external_id: string
   }[]

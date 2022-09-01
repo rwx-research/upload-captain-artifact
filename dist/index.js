@@ -198,6 +198,7 @@ function run() {
                 artifacts: artifacts.map(artifact => ({
                     kind: artifact.kind,
                     name: artifact.name,
+                    parser: artifact.parser,
                     mime_type: artifact.mime_type,
                     external_id: artifact.external_id
                 })),

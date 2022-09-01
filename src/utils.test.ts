@@ -40,7 +40,7 @@ describe('Utils', () => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       ;(core.getInput as jest.Mock<any>).mockImplementation(input => {
         if (input === 'artifacts') {
-          return '[{"kind": "test_results", "name": "Some Name", "path": "some_path.json"}]'
+          return '[{"kind": "test_results", "name": "Some Name", "path": "some_path.json", "parser": "rspec_json"}]'
         } else if (input === 'if-files-not-found') {
           return 'warn'
         } else if (input === 'job-matrix') {
@@ -59,7 +59,12 @@ describe('Utils', () => {
       expect(getInputs()).toEqual({
         accountName: 'rwx-research',
         artifacts: [
-          {kind: 'test_results', name: 'Some Name', path: 'some_path.json'}
+          {
+            kind: 'test_results',
+            name: 'Some Name',
+            path: 'some_path.json',
+            parser: 'rspec_json'
+          }
         ],
         ifFilesNotFound: 'warn',
         jobMatrix: {foo: 1, bar: 2},

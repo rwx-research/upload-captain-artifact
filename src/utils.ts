@@ -1,11 +1,16 @@
 import * as core from '@actions/core'
 import * as github from '@actions/github'
-import {BulkArtifactKind, BulkArtifactMimeType} from './api/captain'
+import {
+  BulkArtifactKind,
+  BulkArtifactMimeType,
+  BulkArtifactParser
+} from './api/captain'
 
 export type InputArtifact = {
   kind: BulkArtifactKind
   name: string
   path: string
+  parser?: BulkArtifactParser
 }
 export type IfFilesNotFound = 'ignore' | 'warn' | 'error'
 export type Inputs = {

@@ -1,6 +1,7 @@
 import {
   BulkArtifactKind,
   BulkArtifactMimeType,
+  BulkArtifactParser,
   BulkStatus,
   createBulkArtifacts,
   updateBulkArtifactsStatus
@@ -16,6 +17,7 @@ describe('Captain API', () => {
           kind: 'test_results' as BulkArtifactKind,
           name: 'Jest JUnit',
           mime_type: 'application/json' as BulkArtifactMimeType,
+          parser: 'junit_xml' as BulkArtifactParser,
           external_id: 'some-uuid'
         },
         {

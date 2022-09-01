@@ -29,7 +29,8 @@ jobs:
               {
                 "name": "Jest JUnit",
                 "path": "./junit.xml",
-                "kind": "test_results"
+                "kind": "test_results",
+                "parser": "junit_xml"
               }
             ]
           job-matrix: "${{ toJSON(matrix) }}"
@@ -42,7 +43,8 @@ jobs:
               {
                 "name": "Jest JUnit",
                 "path": "./junit.xml",
-                "kind": "test_results"
+                "kind": "test_results",
+                "parser": "junit_xml"
               }
             ]
           job-matrix: "${{ toJSON(matrix) }}"

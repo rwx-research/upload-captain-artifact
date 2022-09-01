@@ -30,7 +30,8 @@ describe('run', () => {
         {
           kind: 'test_results',
           name: 'artifact-json',
-          path: './fixtures/json-artifact.json'
+          path: './fixtures/json-artifact.json',
+          parser: 'rspec_json'
         },
         {
           kind: 'test_results',
@@ -57,6 +58,7 @@ describe('run', () => {
             {
               kind: 'test_results',
               name: 'artifact-json',
+              parser: 'rspec_json',
               mime_type: 'application/json',
               external_id: 'uuid-one'
             },
@@ -155,7 +157,8 @@ describe('run', () => {
         {
           kind: 'test_results',
           name: 'artifact-json',
-          path: './fixtures/json-artifact.json'
+          path: './fixtures/json-artifact.json',
+          parser: 'rspec_json'
         },
         {
           kind: 'test_results',
@@ -182,6 +185,7 @@ describe('run', () => {
             {
               kind: 'test_results',
               name: 'artifact-json',
+              parser: 'rspec_json',
               mime_type: 'application/json',
               external_id: 'uuid-one'
             },
@@ -226,7 +230,8 @@ describe('run', () => {
         {
           kind: 'test_results',
           name: 'artifact-json',
-          path: './fixtures/json-artifact.json'
+          path: './fixtures/json-artifact.json',
+          parser: 'rspec_json'
         },
         {
           kind: 'test_results',
@@ -253,6 +258,7 @@ describe('run', () => {
             {
               kind: 'test_results',
               name: 'artifact-json',
+              parser: 'rspec_json',
               mime_type: 'application/json',
               external_id: 'uuid-one'
             },
@@ -319,7 +325,8 @@ describe('run', () => {
         {
           kind: 'test_results',
           name: 'artifact-json',
-          path: './fixtures/json-artifact.json'
+          path: './fixtures/json-artifact.json',
+          parser: 'rspec_json'
         },
         {
           kind: 'test_results',
@@ -346,6 +353,7 @@ describe('run', () => {
             {
               kind: 'test_results',
               name: 'artifact-json',
+              parser: 'rspec_json',
               mime_type: 'application/json',
               external_id: 'uuid-one'
             },
@@ -412,7 +420,8 @@ describe('run', () => {
         {
           kind: 'test_results',
           name: 'artifact-json',
-          path: './fixtures/json-artifact.json'
+          path: './fixtures/json-artifact.json',
+          parser: 'rspec_json'
         },
         {
           kind: 'test_results',
@@ -439,6 +448,7 @@ describe('run', () => {
             {
               kind: 'test_results',
               name: 'artifact-json',
+              parser: 'rspec_json',
               mime_type: 'application/json',
               external_id: 'uuid-one'
             },
@@ -789,7 +799,8 @@ describe('run', () => {
           {
             kind: 'test_results',
             name: 'artifact-json',
-            path: './fixtures/json-artifact.json'
+            path: './fixtures/json-artifact.json',
+            parser: 'rspec_json'
           },
           {
             kind: 'test_results',
@@ -816,6 +827,7 @@ describe('run', () => {
               {
                 kind: 'test_results',
                 name: 'artifact-json',
+                parser: 'rspec_json',
                 mime_type: 'application/json',
                 external_id: 'uuid-one'
               },
@@ -880,7 +892,8 @@ describe('run', () => {
           {
             kind: 'test_results',
             name: 'artifact-json',
-            path: './fixtures/json-artifact.json'
+            path: './fixtures/json-artifact.json',
+            parser: 'rspec_json'
           },
           {
             kind: 'test_results',
@@ -907,6 +920,7 @@ describe('run', () => {
               {
                 kind: 'test_results',
                 name: 'artifact-json',
+                parser: 'rspec_json',
                 mime_type: 'application/json',
                 external_id: 'uuid-one'
               },
@@ -974,7 +988,8 @@ describe('run', () => {
           {
             kind: 'test_results',
             name: 'artifact-json',
-            path: './fixtures/json-artifact.json'
+            path: './fixtures/json-artifact.json',
+            parser: 'rspec_json'
           },
           {
             kind: 'test_results',
@@ -1001,6 +1016,7 @@ describe('run', () => {
               {
                 kind: 'test_results',
                 name: 'artifact-json',
+                parser: 'rspec_json',
                 mime_type: 'application/json',
                 external_id: 'uuid-one'
               },

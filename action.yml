@@ -1,6 +1,9 @@
 name: Upload Captain Artifact
 description: Upload artifacts to Captain
 author: RWX
+branding:
+  icon: 'upload-cloud'
+  color: 'green'
 inputs:
   artifacts:
     required: true

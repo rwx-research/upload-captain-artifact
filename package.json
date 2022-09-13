@@ -1,8 +1,8 @@
 {
-  "name": "typescript-action",
-  "version": "0.0.0",
+  "name": "upload-captain-artifact",
+  "version": "0.0.1",
   "private": true,
-  "description": "TypeScript template action",
+  "description": "This action uploads artifacts, including test results, into Captain.",
   "main": "lib/main.js",
   "scripts": {
     "build": "tsc",
@@ -15,14 +15,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/actions/typescript-action.git"
+    "url": "https://github.com/rwx-research/upload-captain-artifact.git"
   },
   "keywords": [
     "actions",
     "node",
     "setup"
   ],
-  "author": "",
+  "author": "rwx",
   "license": "MIT",
   "dependencies": {
     "@actions/core": "1.9.1",

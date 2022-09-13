@@ -1,5 +1,9 @@
 # Upload Captain Artifact
 
+This action uploads artifacts, including test results, into [Captain](https://captain.build/).
+
+Captain is a build and test suite performance management platform.
+
 You'll need a [Captain API Token](https://www.rwx.com/captain/docs/api-tokens) to use this Action.
 
 ## Usage
@@ -7,6 +11,7 @@ You'll need a [Captain API Token](https://www.rwx.com/captain/docs/api-tokens) t
 ```yaml
 - uses: rwx-research/upload-captain-artifact@v0.0.1
   if: always()
+  continue-on-error: true
   with:
     # Required.
     # For additional documentation on attributes see
@@ -45,6 +50,7 @@ You'll need a [Captain API Token](https://www.rwx.com/captain/docs/api-tokens) t
 - name: Upload test results to Captain
   uses: rwx-research/upload-captain-artifact@v0.0.1
   if: always()
+  continue-on-error: true
   with:
     artifacts: |
       [
@@ -59,7 +65,9 @@ You'll need a [Captain API Token](https://www.rwx.com/captain/docs/api-tokens) t
 ```
 
 You should configure the build step to run even if the test suite fails by adding `if: always()`.
-This will enable Captain to provide capabilities related to test failures, such as identifying flaky tests.
+This will enable Captain to provide functionality related to test failures, such as identifying flaky tests.
+
+We also recommend setting `continue-on-error: true` so that any errors uploading artifacts will not cause your entire build to fail.
 
 For documentation on artifact attributes, such as available parsers, see the
 [Captain Documentation on Uploading Artifacts and Test Results](https://www.rwx.com/captain/docs/upload-artifacts-and-test-results)

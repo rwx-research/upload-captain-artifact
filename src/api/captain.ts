@@ -13,6 +13,7 @@ export type BulkArtifactParser =
   | 'cypress_junit_xml'
   | 'junit_xml'
   | 'rspec_json'
+  | 'xunit_dot_net_xml'
 export type BulkArtifactKind = 'test_results'
 type BulkArtifactsResult = Result<BulkArtifact[], Error[]>
 type BulkArtifactsInput = {

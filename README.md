@@ -9,7 +9,7 @@ You'll need a [Captain API Token](https://www.rwx.com/captain/docs/api-tokens) t
 ## Usage
 
 ```yaml
-- uses: rwx-research/upload-captain-artifact@v0.0.1
+- uses: rwx-research/upload-captain-artifact@v1
   if: always()
   continue-on-error: true
   with:
@@ -48,7 +48,7 @@ You'll need a [Captain API Token](https://www.rwx.com/captain/docs/api-tokens) t
 
 ```yaml
 - name: Upload test results to Captain
-  uses: rwx-research/upload-captain-artifact@v0.0.1
+  uses: rwx-research/upload-captain-artifact@v1
   if: always()
   continue-on-error: true
   with:

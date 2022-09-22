@@ -48,11 +48,12 @@ function parseIfFilesNotFound(input: string): IfFilesNotFound {
 }
 
 export function getInputs(): Inputs {
+  const matrix = core.getInput('job-matrix')
   return {
     accountName: github.context.repo.owner,
     artifacts: JSON.parse(core.getInput('artifacts')) as InputArtifact[],
     ifFilesNotFound: parseIfFilesNotFound(core.getInput('if-files-not-found')),
-    jobMatrix: JSON.parse(core.getInput('job-matrix')),
+    jobMatrix: matrix ? JSON.parse(matrix) : null,
     jobName: core.getInput('job-name') || github.context.job,
     repositoryName: github.context.repo.repo,
     runId: github.context.runId.toString(),

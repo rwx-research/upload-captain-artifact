@@ -108,5 +108,78 @@ describe('Utils', () => {
         captainToken: 'fake-token'
       })
     })
+
+    it('handles a missing value for job-matrix', () => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      ;(core.getInput as jest.Mock<any>).mockImplementation(input => {
+        if (input === 'artifacts') {
+          return '[{"kind": "test_results", "name": "Some Name", "path": "some_path.json", "parser": "rspec_json"}]'
+        } else if (input === 'if-files-not-found') {
+          return 'warn'
+        } else if (input === 'job-matrix') {
+          return ''
+        } else if (input === 'job-name') {
+          return 'Some Job Name'
+        } else if (input === 'captain-base-url') {
+          return 'https://captain.example.com'
+        } else if (input === 'captain-token') {
+          return 'fake-token'
+        } else {
+          return 'nonsense'
+        }
+      })
+
+      expect(getInputs()).toEqual({
+        accountName: 'rwx-research',
+        artifacts: [
+          {
+            kind: 'test_results',
+            name: 'Some Name',
+            path: 'some_path.json',
+            parser: 'rspec_json'
+          }
+        ],
+        ifFilesNotFound: 'warn',
+        jobMatrix: null,
+        jobName: 'Some Job Name',
+        repositoryName: 'upload-captain-artifact',
+        runId: '1244592',
+        captainBaseUrl: 'https://captain.example.com',
+        captainToken: 'fake-token'
+      })
+
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      ;(core.getInput as jest.Mock<any>).mockImplementation(input => {
+        if (input === 'artifacts') {
+          return '[{"kind": "test_results", "name": "Some Name", "path": "some_path.json"}]'
+        } else if (input === 'if-files-not-found') {
+          return 'ignore'
+        } else if (input === 'job-matrix') {
+          return null
+        } else if (input === 'job-name') {
+          return ''
+        } else if (input === 'captain-base-url') {
+          return 'https://captain.example.com'
+        } else if (input === 'captain-token') {
+          return 'fake-token'
+        } else {
+          return 'nonsense'
+        }
+      })
+
+      expect(getInputs()).toEqual({
+        accountName: 'rwx-research',
+        artifacts: [
+          {kind: 'test_results', name: 'Some Name', path: 'some_path.json'}
+        ],
+        ifFilesNotFound: 'ignore',
+        jobMatrix: null,
+        jobName: 'some_job_id',
+        repositoryName: 'upload-captain-artifact',
+        runId: '1244592',
+        captainBaseUrl: 'https://captain.example.com',
+        captainToken: 'fake-token'
+      })
+    })
   })
 })

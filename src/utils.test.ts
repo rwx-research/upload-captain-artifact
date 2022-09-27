@@ -36,6 +36,16 @@ describe('Utils', () => {
   })
 
   describe('getInputs', () => {
+    const originalRunAttempt = process.env.GITHUB_RUN_ATTEMPT
+
+    beforeEach(() => {
+      process.env.GITHUB_RUN_ATTEMPT = '4'
+    })
+
+    afterEach(() => {
+      process.env.GITHUB_RUN_ATTEMPT = originalRunAttempt
+    })
+
     it('gathers inputs from the github context and action input', () => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       ;(core.getInput as jest.Mock<any>).mockImplementation(input => {
@@ -71,6 +81,7 @@ describe('Utils', () => {
         jobName: 'Some Job Name',
         repositoryName: 'upload-captain-artifact',
         runId: '1244592',
+        runAttempt: 4,
         captainBaseUrl: 'https://captain.example.com',
         captainToken: 'fake-token'
       })
@@ -104,6 +115,7 @@ describe('Utils', () => {
         jobName: 'some_job_id',
         repositoryName: 'upload-captain-artifact',
         runId: '1244592',
+        runAttempt: 4,
         captainBaseUrl: 'https://captain.example.com',
         captainToken: 'fake-token'
       })
@@ -144,6 +156,7 @@ describe('Utils', () => {
         jobName: 'Some Job Name',
         repositoryName: 'upload-captain-artifact',
         runId: '1244592',
+        runAttempt: 4,
         captainBaseUrl: 'https://captain.example.com',
         captainToken: 'fake-token'
       })
@@ -177,6 +190,7 @@ describe('Utils', () => {
         jobName: 'some_job_id',
         repositoryName: 'upload-captain-artifact',
         runId: '1244592',
+        runAttempt: 4,
         captainBaseUrl: 'https://captain.example.com',
         captainToken: 'fake-token'
       })

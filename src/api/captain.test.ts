@@ -30,6 +30,7 @@ describe('Captain API', () => {
       job_name: 'test-and-lint',
       job_matrix: null,
       repository_name: 'upload-captain-artifact',
+      run_attempt: 2,
       run_id: 'run-123'
     }
 

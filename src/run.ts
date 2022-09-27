@@ -69,6 +69,7 @@ export default async function run(): Promise<void> {
         job_name: inputs.jobName,
         job_matrix: inputs.jobMatrix,
         repository_name: inputs.repositoryName,
+        run_attempt: inputs.runAttempt,
         run_id: inputs.runId
       },
       {

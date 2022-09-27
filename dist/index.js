@@ -205,6 +205,7 @@ function run() {
                 job_name: inputs.jobName,
                 job_matrix: inputs.jobMatrix,
                 repository_name: inputs.repositoryName,
+                run_attempt: inputs.runAttempt,
                 run_id: inputs.runId
             }, {
                 captainBaseUrl: inputs.captainBaseUrl,
@@ -323,6 +324,13 @@ function parseIfFilesNotFound(input) {
         throw new Error(`Unexpected value ${input} for 'if-files-not-found'. Acceptable values are 'ignore', 'warn', and 'error'`);
     }
 }
+function runAttempt() {
+    const githubRunAttempt = process.env.GITHUB_RUN_ATTEMPT;
+    if (!githubRunAttempt) {
+        throw new Error('process.env.GITHUB_RUN_ATTEMPT was undefined');
+    }
+    return parseInt(githubRunAttempt);
+}
 function getInputs() {
     const matrix = core.getInput('job-matrix');
     return {
@@ -333,6 +341,7 @@ function getInputs() {
         jobName: core.getInput('job-name') || github.context.job,
         repositoryName: github.context.repo.repo,
         runId: github.context.runId.toString(),
+        runAttempt: runAttempt(),
         captainBaseUrl: core.getInput('captain-base-url'),
         captainToken: core.getInput('captain-token')
     };

@@ -43,6 +43,7 @@ describe('run', () => {
       jobMatrix: null,
       jobName: 'some-job-name',
       repositoryName: 'upload-captain-artifact',
+      runAttempt: 4,
       runId: '1234',
       captainBaseUrl: 'https://captain.example.com',
       captainToken: 'fake-token'
@@ -72,6 +73,7 @@ describe('run', () => {
           job_name: 'some-job-name',
           job_matrix: null,
           repository_name: 'upload-captain-artifact',
+          run_attempt: 4,
           run_id: '1234'
         },
         headers: {Authorization: 'Bearer fake-token'},
@@ -135,6 +137,7 @@ describe('run', () => {
       jobMatrix: null,
       jobName: 'some-job-name',
       repositoryName: 'upload-captain-artifact',
+      runAttempt: 4,
       runId: '1234',
       captainBaseUrl: 'https://captain.example.com',
       captainToken: 'fake-token'
@@ -170,6 +173,7 @@ describe('run', () => {
       jobMatrix: null,
       jobName: 'some-job-name',
       repositoryName: 'upload-captain-artifact',
+      runAttempt: 4,
       runId: '1234',
       captainBaseUrl: 'https://captain.example.com',
       captainToken: 'fake-token'
@@ -199,6 +203,7 @@ describe('run', () => {
           job_name: 'some-job-name',
           job_matrix: null,
           repository_name: 'upload-captain-artifact',
+          run_attempt: 4,
           run_id: '1234'
         },
         headers: {Authorization: 'Bearer fake-token'},
@@ -243,6 +248,7 @@ describe('run', () => {
       jobMatrix: null,
       jobName: 'some-job-name',
       repositoryName: 'upload-captain-artifact',
+      runAttempt: 4,
       runId: '1234',
       captainBaseUrl: 'https://captain.example.com',
       captainToken: 'fake-token'
@@ -272,6 +278,7 @@ describe('run', () => {
           job_name: 'some-job-name',
           job_matrix: null,
           repository_name: 'upload-captain-artifact',
+          run_attempt: 4,
           run_id: '1234'
         },
         headers: {Authorization: 'Bearer fake-token'},
@@ -338,6 +345,7 @@ describe('run', () => {
       jobMatrix: null,
       jobName: 'some-job-name',
       repositoryName: 'upload-captain-artifact',
+      runAttempt: 4,
       runId: '1234',
       captainBaseUrl: 'https://captain.example.com',
       captainToken: 'fake-token'
@@ -367,6 +375,7 @@ describe('run', () => {
           job_name: 'some-job-name',
           job_matrix: null,
           repository_name: 'upload-captain-artifact',
+          run_attempt: 4,
           run_id: '1234'
         },
         headers: {Authorization: 'Bearer fake-token'},
@@ -433,6 +442,7 @@ describe('run', () => {
       jobMatrix: null,
       jobName: 'some-job-name',
       repositoryName: 'upload-captain-artifact',
+      runAttempt: 4,
       runId: '1234',
       captainBaseUrl: 'https://captain.example.com',
       captainToken: 'fake-token'
@@ -462,6 +472,7 @@ describe('run', () => {
           job_name: 'some-job-name',
           job_matrix: null,
           repository_name: 'upload-captain-artifact',
+          run_attempt: 4,
           run_id: '1234'
         },
         headers: {Authorization: 'Bearer fake-token'},
@@ -525,6 +536,7 @@ describe('run', () => {
         jobMatrix: null,
         jobName: 'some-job-name',
         repositoryName: 'upload-captain-artifact',
+        runAttempt: 4,
         runId: '1234',
         captainBaseUrl: 'https://captain.example.com',
         captainToken: 'fake-token'
@@ -553,6 +565,7 @@ describe('run', () => {
             job_name: 'some-job-name',
             job_matrix: null,
             repository_name: 'upload-captain-artifact',
+            run_attempt: 4,
             run_id: '1234'
           },
           headers: {Authorization: 'Bearer fake-token'},
@@ -614,6 +627,7 @@ describe('run', () => {
         jobMatrix: null,
         jobName: 'some-job-name',
         repositoryName: 'upload-captain-artifact',
+        runAttempt: 4,
         runId: '1234',
         captainBaseUrl: 'https://captain.example.com',
         captainToken: 'fake-token'
@@ -642,6 +656,7 @@ describe('run', () => {
             job_name: 'some-job-name',
             job_matrix: null,
             repository_name: 'upload-captain-artifact',
+            run_attempt: 4,
             run_id: '1234'
           },
           headers: {Authorization: 'Bearer fake-token'},
@@ -711,6 +726,7 @@ describe('run', () => {
         jobMatrix: null,
         jobName: 'some-job-name',
         repositoryName: 'upload-captain-artifact',
+        runAttempt: 4,
         runId: '1234',
         captainBaseUrl: 'https://captain.example.com',
         captainToken: 'fake-token'
@@ -739,6 +755,7 @@ describe('run', () => {
             job_name: 'some-job-name',
             job_matrix: null,
             repository_name: 'upload-captain-artifact',
+            run_attempt: 4,
             run_id: '1234'
           },
           headers: {Authorization: 'Bearer fake-token'},
@@ -812,6 +829,7 @@ describe('run', () => {
         jobMatrix: null,
         jobName: 'some-job-name',
         repositoryName: 'upload-captain-artifact',
+        runAttempt: 4,
         runId: '1234',
         captainBaseUrl: 'https://captain.example.com',
         captainToken: 'fake-token'
@@ -841,6 +859,7 @@ describe('run', () => {
             job_name: 'some-job-name',
             job_matrix: null,
             repository_name: 'upload-captain-artifact',
+            run_attempt: 4,
             run_id: '1234'
           },
           headers: {Authorization: 'Bearer fake-token'},
@@ -905,6 +924,7 @@ describe('run', () => {
         jobMatrix: null,
         jobName: 'some-job-name',
         repositoryName: 'upload-captain-artifact',
+        runAttempt: 4,
         runId: '1234',
         captainBaseUrl: 'https://captain.example.com',
         captainToken: 'fake-token'
@@ -934,6 +954,7 @@ describe('run', () => {
             job_name: 'some-job-name',
             job_matrix: null,
             repository_name: 'upload-captain-artifact',
+            run_attempt: 4,
             run_id: '1234'
           },
           headers: {Authorization: 'Bearer fake-token'},
@@ -1001,6 +1022,7 @@ describe('run', () => {
         jobMatrix: null,
         jobName: 'some-job-name',
         repositoryName: 'upload-captain-artifact',
+        runAttempt: 4,
         runId: '1234',
         captainBaseUrl: 'https://captain.example.com',
         captainToken: 'fake-token'
@@ -1030,6 +1052,7 @@ describe('run', () => {
             job_name: 'some-job-name',
             job_matrix: null,
             repository_name: 'upload-captain-artifact',
+            run_attempt: 4,
             run_id: '1234'
           },
           headers: {Authorization: 'Bearer fake-token'},

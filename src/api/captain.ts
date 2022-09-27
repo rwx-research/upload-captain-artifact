@@ -28,6 +28,7 @@ type BulkArtifactsInput = {
   job_name: string
   job_matrix: object | null
   repository_name: string
+  run_attempt: number
   run_id: string
 }
 type CaptainConfig = {

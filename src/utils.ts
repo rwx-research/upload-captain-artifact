@@ -21,6 +21,7 @@ export type Inputs = {
   jobName: string
   repositoryName: string
   runId: string
+  runAttempt: number
   captainBaseUrl: string
   captainToken: string
 }
@@ -47,6 +48,16 @@ function parseIfFilesNotFound(input: string): IfFilesNotFound {
   }
 }
 
+function runAttempt(): number {
+  const githubRunAttempt = process.env.GITHUB_RUN_ATTEMPT
+
+  if (!githubRunAttempt) {
+    throw new Error('process.env.GITHUB_RUN_ATTEMPT was undefined')
+  }
+
+  return parseInt(githubRunAttempt)
+}
+
 export function getInputs(): Inputs {
   const matrix = core.getInput('job-matrix')
   return {
@@ -57,6 +68,7 @@ export function getInputs(): Inputs {
     jobName: core.getInput('job-name') || github.context.job,
     repositoryName: github.context.repo.repo,
     runId: github.context.runId.toString(),
+    runAttempt: runAttempt(),
     captainBaseUrl: core.getInput('captain-base-url'),
     captainToken: core.getInput('captain-token')
   }

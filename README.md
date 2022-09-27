@@ -1,6 +1,6 @@
 # Upload Captain Artifact
 
-This action uploads artifacts, including test results, into [Captain](https://captain.build/).
+This action uploads test results to [Captain](https://captain.build/).
 
 Captain is a build and test suite performance management platform.
 

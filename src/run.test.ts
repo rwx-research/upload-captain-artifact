@@ -609,7 +609,7 @@ describe('run', () => {
     expect(mockSetFailed).toBeCalledTimes(0)
   })
 
-  describe('when no files are not found', () => {
+  describe('when no files are found', () => {
     it('outputs neither a warning nor an error when ignoring', async () => {
       const inputs: Inputs = {
         accountName: 'rwx-research',

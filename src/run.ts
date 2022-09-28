@@ -2,6 +2,7 @@ import * as core from '@actions/core'
 import {extname} from 'path'
 import fetch, {Response} from 'node-fetch'
 import {existsSync, readFileSync} from 'fs'
+import * as fastGlob from 'fast-glob'
 import {v4 as uuidv4} from 'uuid'
 import {
   createBulkArtifacts,
@@ -20,7 +21,19 @@ type Artifact = InputArtifact & {
 export default async function run(): Promise<void> {
   try {
     const inputs = getInputs()
-    const artifacts: Artifact[] = inputs.artifacts.map(artifact => ({
+    const globExpandedInputArtifacts: InputArtifact[] =
+      inputs.artifacts.flatMap(artifact => {
+        const expandedGlob = fastGlob.sync(artifact.path)
+        if (expandedGlob.length > 1) {
+          return expandedGlob.map(path => ({
+            ...artifact,
+            path
+          }))
+        } else {
+          return [artifact]
+        }
+      })
+    const artifacts: Artifact[] = globExpandedInputArtifacts.map(artifact => ({
       ...artifact,
       mime_type: mimeTypeFromExtension(extname(artifact.path).toLowerCase()),
       external_id: uuidv4()

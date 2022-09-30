@@ -18,13 +18,15 @@ describe('Captain API', () => {
           name: 'Jest JUnit',
           mime_type: 'application/json' as BulkArtifactMimeType,
           parser: 'junit_xml' as BulkArtifactParser,
-          external_id: 'some-uuid'
+          external_id: 'some-uuid',
+          original_path: 'amongst/the/greatest/test-artifacts.json'
         },
         {
           kind: 'test_results' as BulkArtifactKind,
           name: 'Jest Something Else',
           mime_type: 'application/xml' as BulkArtifactMimeType,
-          external_id: 'some-other-uuid'
+          external_id: 'some-other-uuid',
+          original_path: 'an/inferior/test-artifacts.xml'
         }
       ],
       job_name: 'test-and-lint',

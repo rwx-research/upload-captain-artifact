@@ -61,13 +61,15 @@ describe('run', () => {
               name: 'artifact-json',
               parser: 'rspec_json',
               mime_type: 'application/json',
-              external_id: 'uuid-one'
+              external_id: 'uuid-one',
+              original_path: './fixtures/json-artifact.json'
             },
             {
               kind: 'test_results',
               name: 'artifact-xml',
               mime_type: 'application/xml',
-              external_id: 'uuid-two'
+              external_id: 'uuid-two',
+              original_path: './fixtures/xml-artifact.xml'
             }
           ],
           job_name: 'some-job-name',
@@ -123,7 +125,7 @@ describe('run', () => {
     expect(mockSetFailed).toBeCalledTimes(0)
   })
 
-  it('does slurps in globs', async () => {
+  it('handles globs in path', async () => {
     const inputs: Inputs = {
       accountName: 'rwx-research',
       artifacts: [
@@ -156,14 +158,16 @@ describe('run', () => {
               name: 'artifact-json',
               parser: 'rspec_json',
               mime_type: 'application/json',
-              external_id: 'uuid-one'
+              external_id: 'uuid-one',
+              original_path: './fixtures/**/*.json'
             },
             {
               kind: 'test_results',
               name: 'artifact-json',
               parser: 'rspec_json',
               mime_type: 'application/json',
-              external_id: 'uuid-two'
+              external_id: 'uuid-two',
+              original_path: './fixtures/**/*.json'
             }
           ],
           job_name: 'some-job-name',
@@ -284,13 +288,15 @@ describe('run', () => {
               name: 'artifact-json',
               parser: 'rspec_json',
               mime_type: 'application/json',
-              external_id: 'uuid-one'
+              external_id: 'uuid-one',
+              original_path: './fixtures/json-artifact.json'
             },
             {
               kind: 'test_results',
               name: 'artifact-xml',
               mime_type: 'application/xml',
-              external_id: 'uuid-two'
+              external_id: 'uuid-two',
+              original_path: './fixtures/xml-artifact.xml'
             }
           ],
           job_name: 'some-job-name',
@@ -359,13 +365,15 @@ describe('run', () => {
               name: 'artifact-json',
               parser: 'rspec_json',
               mime_type: 'application/json',
-              external_id: 'uuid-one'
+              external_id: 'uuid-one',
+              original_path: './fixtures/json-artifact.json'
             },
             {
               kind: 'test_results',
               name: 'artifact-xml',
               mime_type: 'application/xml',
-              external_id: 'uuid-two'
+              external_id: 'uuid-two',
+              original_path: './fixtures/xml-artifact.xml'
             }
           ],
           job_name: 'some-job-name',
@@ -456,13 +464,15 @@ describe('run', () => {
               name: 'artifact-json',
               parser: 'rspec_json',
               mime_type: 'application/json',
-              external_id: 'uuid-one'
+              external_id: 'uuid-one',
+              original_path: './fixtures/json-artifact.json'
             },
             {
               kind: 'test_results',
               name: 'artifact-xml',
               mime_type: 'application/xml',
-              external_id: 'uuid-two'
+              external_id: 'uuid-two',
+              original_path: './fixtures/xml-artifact.xml'
             }
           ],
           job_name: 'some-job-name',
@@ -553,13 +563,15 @@ describe('run', () => {
               name: 'artifact-json',
               parser: 'rspec_json',
               mime_type: 'application/json',
-              external_id: 'uuid-one'
+              external_id: 'uuid-one',
+              original_path: './fixtures/json-artifact.json'
             },
             {
               kind: 'test_results',
               name: 'artifact-xml',
               mime_type: 'application/xml',
-              external_id: 'uuid-two'
+              external_id: 'uuid-two',
+              original_path: './fixtures/xml-artifact.xml'
             }
           ],
           job_name: 'some-job-name',
@@ -646,13 +658,15 @@ describe('run', () => {
                 kind: 'test_results',
                 name: 'artifact-json',
                 mime_type: 'application/json',
-                external_id: 'uuid-one'
+                external_id: 'uuid-one',
+                original_path: './fixtures/does-not-exist.json'
               },
               {
                 kind: 'test_results',
                 name: 'artifact-xml',
                 mime_type: 'application/xml',
-                external_id: 'uuid-two'
+                external_id: 'uuid-two',
+                original_path: './fixtures/does-not-exist.xml'
               }
             ],
             job_name: 'some-job-name',
@@ -737,13 +751,15 @@ describe('run', () => {
                 kind: 'test_results',
                 name: 'artifact-json',
                 mime_type: 'application/json',
-                external_id: 'uuid-one'
+                external_id: 'uuid-one',
+                original_path: './fixtures/does-not-exist.json'
               },
               {
                 kind: 'test_results',
                 name: 'artifact-xml',
                 mime_type: 'application/xml',
-                external_id: 'uuid-two'
+                external_id: 'uuid-two',
+                original_path: './fixtures/does-not-exist.xml'
               }
             ],
             job_name: 'some-job-name',
@@ -836,13 +852,15 @@ describe('run', () => {
                 kind: 'test_results',
                 name: 'artifact-json',
                 mime_type: 'application/json',
-                external_id: 'uuid-one'
+                external_id: 'uuid-one',
+                original_path: './fixtures/does-not-exist.json'
               },
               {
                 kind: 'test_results',
                 name: 'artifact-xml',
                 mime_type: 'application/xml',
-                external_id: 'uuid-two'
+                external_id: 'uuid-two',
+                original_path: './fixtures/does-not-exist.xml'
               }
             ],
             job_name: 'some-job-name',
@@ -940,13 +958,15 @@ describe('run', () => {
                 name: 'artifact-json',
                 parser: 'rspec_json',
                 mime_type: 'application/json',
-                external_id: 'uuid-one'
+                external_id: 'uuid-one',
+                original_path: './fixtures/json-artifact.json'
               },
               {
                 kind: 'test_results',
                 name: 'artifact-xml',
                 mime_type: 'application/xml',
-                external_id: 'uuid-two'
+                external_id: 'uuid-two',
+                original_path: './fixtures/does-not-exist.xml'
               }
             ],
             job_name: 'some-job-name',
@@ -1035,13 +1055,15 @@ describe('run', () => {
                 name: 'artifact-json',
                 parser: 'rspec_json',
                 mime_type: 'application/json',
-                external_id: 'uuid-one'
+                external_id: 'uuid-one',
+                original_path: './fixtures/json-artifact.json'
               },
               {
                 kind: 'test_results',
                 name: 'artifact-xml',
                 mime_type: 'application/xml',
-                external_id: 'uuid-two'
+                external_id: 'uuid-two',
+                original_path: './fixtures/does-not-exist.xml'
               }
             ],
             job_name: 'some-job-name',
@@ -1133,13 +1155,15 @@ describe('run', () => {
                 name: 'artifact-json',
                 parser: 'rspec_json',
                 mime_type: 'application/json',
-                external_id: 'uuid-one'
+                external_id: 'uuid-one',
+                original_path: './fixtures/json-artifact.json'
               },
               {
                 kind: 'test_results',
                 name: 'artifact-xml',
                 mime_type: 'application/xml',
-                external_id: 'uuid-two'
+                external_id: 'uuid-two',
+                original_path: './fixtures/does-not-exist.xml'
               }
             ],
             job_name: 'some-job-name',

@@ -172,16 +172,17 @@ function run() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             const inputs = (0, utils_1.getInputs)();
-            const globExpandedInputArtifacts = inputs.artifacts.flatMap(artifact => {
+            const artifacts = inputs.artifacts
+                .flatMap(artifact => {
                 const expandedGlob = fastGlob.sync(artifact.path);
                 if (expandedGlob.length > 1) {
-                    return expandedGlob.map(path => (Object.assign(Object.assign({}, artifact), { path })));
+                    return expandedGlob.map(path => (Object.assign(Object.assign({}, artifact), { path, original_path: artifact.path })));
                 }
                 else {
-                    return [artifact];
+                    return [Object.assign(Object.assign({}, artifact), { original_path: artifact.path })];
                 }
-            });
-            const artifacts = globExpandedInputArtifacts.map(artifact => (Object.assign(Object.assign({}, artifact), { mime_type: (0, utils_1.mimeTypeFromExtension)((0, path_1.extname)(artifact.path).toLowerCase()), external_id: (0, uuid_1.v4)() })));
+            })
+                .map(artifact => (Object.assign(Object.assign({}, artifact), { mime_type: (0, utils_1.mimeTypeFromExtension)((0, path_1.extname)(artifact.path).toLowerCase()), external_id: (0, uuid_1.v4)() })));
             const [artifactsWithFiles, artifactsWithoutFiles] = artifacts.reduce(([withFiles, withoutFiles], artifact) => {
                 if ((0, fs_1.existsSync)(artifact.path)) {
                     return [[...withFiles, artifact], withoutFiles];
@@ -210,7 +211,8 @@ function run() {
                     name: artifact.name,
                     parser: artifact.parser,
                     mime_type: artifact.mime_type,
-                    external_id: artifact.external_id
+                    external_id: artifact.external_id,
+                    original_path: artifact.original_path
                 })),
                 job_name: inputs.jobName,
                 job_matrix: inputs.jobMatrix,

@@ -15,7 +15,7 @@ You'll need a [Captain API Token](https://www.rwx.com/captain/docs/api-tokens) t
   with:
     # Required.
     # name: how the artifact will be shown in captain
-    # path: path to test result
+    # path: path to test result. This field supports bash globbing (e.g. **/*).
     # kind: for now, this should always be "test_results"
     # parser: one of
     #   - cypress_junit_xml
@@ -63,7 +63,7 @@ You'll need a [Captain API Token](https://www.rwx.com/captain/docs/api-tokens) t
       [
         {
           "name": "RSpec",
-          "path": "tmp/rspec.json",
+          "path": "tmp/**/rspec.json",
           "kind": "test_results",
           "parser": "rspec_json"
         }

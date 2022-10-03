@@ -24,6 +24,7 @@ type BulkArtifactsInput = {
     parser?: BulkArtifactParser
     mime_type: BulkArtifactMimeType
     external_id: string
+    original_path: string
   }[]
   job_name: string
   job_matrix: object | null

@@ -2,6 +2,7 @@ import * as core from '@actions/core'
 import {extname} from 'path'
 import fetch, {Response} from 'node-fetch'
 import {existsSync, readFileSync} from 'fs'
+import * as fastGlob from 'fast-glob'
 import {v4 as uuidv4} from 'uuid'
 import {
   createBulkArtifacts,
@@ -15,16 +16,30 @@ import {getInputs, mimeTypeFromExtension, InputArtifact} from './utils'
 type Artifact = InputArtifact & {
   mime_type: BulkArtifactMimeType
   external_id: string
+  original_path: string
 }
 
 export default async function run(): Promise<void> {
   try {
     const inputs = getInputs()
-    const artifacts: Artifact[] = inputs.artifacts.map(artifact => ({
-      ...artifact,
-      mime_type: mimeTypeFromExtension(extname(artifact.path).toLowerCase()),
-      external_id: uuidv4()
-    }))
+    const artifacts: Artifact[] = inputs.artifacts
+      .flatMap(artifact => {
+        const expandedGlob = fastGlob.sync(artifact.path)
+        if (expandedGlob.length > 1) {
+          return expandedGlob.map(path => ({
+            ...artifact,
+            path,
+            original_path: artifact.path
+          }))
+        } else {
+          return [{...artifact, original_path: artifact.path}]
+        }
+      })
+      .map(artifact => ({
+        ...artifact,
+        mime_type: mimeTypeFromExtension(extname(artifact.path).toLowerCase()),
+        external_id: uuidv4()
+      }))
 
     const [artifactsWithFiles, artifactsWithoutFiles] = artifacts.reduce<
       [Artifact[], Artifact[]]
@@ -64,7 +79,8 @@ export default async function run(): Promise<void> {
           name: artifact.name,
           parser: artifact.parser,
           mime_type: artifact.mime_type,
-          external_id: artifact.external_id
+          external_id: artifact.external_id,
+          original_path: artifact.original_path
         })),
         job_name: inputs.jobName,
         job_matrix: inputs.jobMatrix,

@@ -25,7 +25,7 @@ export default async function run(): Promise<void> {
     const artifacts: Artifact[] = inputs.artifacts
       .flatMap(artifact => {
         const expandedGlob = fastGlob.sync(artifact.path)
-        if (expandedGlob.length > 1) {
+        if (expandedGlob.length > 0) {
           return expandedGlob.map(path => ({
             ...artifact,
             path,

@@ -175,7 +175,7 @@ function run() {
             const artifacts = inputs.artifacts
                 .flatMap(artifact => {
                 const expandedGlob = fastGlob.sync(artifact.path);
-                if (expandedGlob.length > 1) {
+                if (expandedGlob.length > 0) {
                     return expandedGlob.map(path => (Object.assign(Object.assign({}, artifact), { path, original_path: artifact.path })));
                 }
                 else {

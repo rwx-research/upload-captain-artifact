@@ -22,6 +22,11 @@ const mockWarning = core.warning as unknown as jest.Mock<any>
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const mockError = core.error as unknown as jest.Mock<any>
 
+beforeEach(() => {
+  fetchMock.reset()
+  jest.resetAllMocks()
+})
+
 describe('run', () => {
   it('does not mark the run as a failure when everything works', async () => {
     const inputs: Inputs = {
@@ -218,6 +223,169 @@ describe('run', () => {
       readFileSync('./fixtures/glob-test-dir/json-artifact.json')
     )
     expect(mockSetFailed).toBeCalledTimes(0)
+  })
+
+  it('handles globs in path when the glob only matches one file', async () => {
+    const inputs: Inputs = {
+      accountName: 'rwx-research',
+      artifacts: [
+        {
+          kind: 'test_results',
+          name: 'artifact-json',
+          path: './fixtures/glob-test-dir/*.json',
+          parser: 'rspec_json'
+        }
+      ],
+      ifFilesNotFound: 'warn',
+      jobMatrix: null,
+      jobName: 'some-job-name',
+      repositoryName: 'upload-captain-artifact',
+      runAttempt: 4,
+      runId: '1234',
+      captainBaseUrl: 'https://captain.example.com',
+      captainToken: 'fake-token'
+    }
+    mockGetInputs.mockReturnValueOnce(inputs)
+    mockUuid.mockReturnValueOnce('uuid-one').mockReturnValueOnce('uuid-two')
+
+    fetchMock.postOnce(
+      {
+        body: {
+          account_name: 'rwx-research',
+          artifacts: [
+            {
+              kind: 'test_results',
+              name: 'artifact-json',
+              parser: 'rspec_json',
+              mime_type: 'application/json',
+              external_id: 'uuid-one',
+              original_path: './fixtures/glob-test-dir/*.json'
+            }
+          ],
+          job_name: 'some-job-name',
+          job_matrix: null,
+          repository_name: 'upload-captain-artifact',
+          run_attempt: 4,
+          run_id: '1234'
+        },
+        headers: {Authorization: 'Bearer fake-token'},
+        url: 'https://captain.example.com/api/organization/integrations/github/bulk_artifacts'
+      },
+      {
+        body: {
+          bulk_artifacts: [
+            {external_id: 'uuid-one', upload_url: 'https://some-s3-url.one'}
+          ]
+        },
+        status: 201
+      }
+    )
+
+    fetchMock.putOnce('https://some-s3-url.one', {status: 200})
+
+    fetchMock.putOnce(
+      {
+        body: {
+          artifacts: [{external_id: 'uuid-one', status: 'uploaded'}]
+        },
+        headers: {Authorization: 'Bearer fake-token'},
+        url: 'https://captain.example.com/api/organization/integrations/github/bulk_artifacts/status'
+      },
+      {
+        status: 204
+      }
+    )
+
+    await run()
+    expect(mockWarning).not.toBeCalled()
+    expect(mockError).not.toBeCalled()
+    expect(mockSetFailed).not.toBeCalled()
+
+    expect(fetchMock.lastCall('https://some-s3-url.one')?.[1]?.body).toEqual(
+      readFileSync('./fixtures/glob-test-dir/json-artifact.json')
+    )
+  })
+
+  it('handles globs in path when the glob matches zero files', async () => {
+    const inputs: Inputs = {
+      accountName: 'rwx-research',
+      artifacts: [
+        {
+          kind: 'test_results',
+          name: 'artifact-json',
+          path: './fixtures/glob-test-dir/*.xml',
+          parser: 'rspec_json'
+        }
+      ],
+      ifFilesNotFound: 'warn',
+      jobMatrix: null,
+      jobName: 'some-job-name',
+      repositoryName: 'upload-captain-artifact',
+      runAttempt: 4,
+      runId: '1234',
+      captainBaseUrl: 'https://captain.example.com',
+      captainToken: 'fake-token'
+    }
+    mockGetInputs.mockReturnValueOnce(inputs)
+    mockUuid.mockReturnValueOnce('uuid-one').mockReturnValueOnce('uuid-two')
+
+    fetchMock.postOnce(
+      {
+        body: {
+          account_name: 'rwx-research',
+          artifacts: [
+            {
+              kind: 'test_results',
+              name: 'artifact-json',
+              parser: 'rspec_json',
+              mime_type: 'application/xml',
+              external_id: 'uuid-one',
+              original_path: './fixtures/glob-test-dir/*.xml'
+            }
+          ],
+          job_name: 'some-job-name',
+          job_matrix: null,
+          repository_name: 'upload-captain-artifact',
+          run_attempt: 4,
+          run_id: '1234'
+        },
+        headers: {Authorization: 'Bearer fake-token'},
+        url: 'https://captain.example.com/api/organization/integrations/github/bulk_artifacts'
+      },
+      {
+        body: {
+          bulk_artifacts: [
+            {external_id: 'uuid-one', upload_url: 'https://some-s3-url.one'}
+          ]
+        },
+        status: 201
+      }
+    )
+
+    fetchMock.putOnce(
+      {
+        body: {
+          artifacts: [
+            {external_id: 'uuid-one', status: 'upload_skipped_file_missing'}
+          ]
+        },
+        headers: {Authorization: 'Bearer fake-token'},
+        url: 'https://captain.example.com/api/organization/integrations/github/bulk_artifacts/status'
+      },
+      {
+        status: 204
+      }
+    )
+
+    await run()
+    expect(mockWarning).toBeCalledTimes(1)
+    expect(mockWarning).toHaveBeenNthCalledWith(
+      1,
+      "Artifact file not found at './fixtures/glob-test-dir/*.xml' for artifact 'artifact-json'"
+    )
+    expect(mockError).not.toBeCalled()
+    expect(mockSetFailed).not.toBeCalled()
+    await run()
   })
 
   it('marks the run as a failure when an artifact path is not supported', async () => {

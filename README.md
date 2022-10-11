@@ -19,6 +19,7 @@ You'll need a [Captain API Token](https://www.rwx.com/captain/docs/api-tokens) t
     # kind: for now, this should always be "test_results"
     # parser: one of
     #   - cypress_junit_xml
+    #   - jest_json
     #   - junit_xml
     #   - rspec_json
     #   - xunit_dot_net_xml

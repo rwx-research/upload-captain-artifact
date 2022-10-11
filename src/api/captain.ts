@@ -11,6 +11,7 @@ export type BulkArtifact = {external_id: string; upload_url: string}
 export type BulkArtifactMimeType = 'application/json' | 'application/xml'
 export type BulkArtifactParser =
   | 'cypress_junit_xml'
+  | 'jest_json'
   | 'junit_xml'
   | 'rspec_json'
   | 'xunit_dot_net_xml'

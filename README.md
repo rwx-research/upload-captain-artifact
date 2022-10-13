@@ -77,3 +77,11 @@ This will enable Captain to provide functionality related to test failures, such
 
 We also recommend setting `continue-on-error: true` so that any errors uploading artifacts will not cause your entire
 build to fail.
+
+## Reference Implementations
+
+Here are example repositories which use this action with
+
+- [RSpec](https://github.com/captain-examples/RSpec)
+- [Jest](https://github.com/captain-examples/jest)
+- [xUnit](https://github.com/captain-examples/xunit2)

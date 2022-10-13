@@ -75,4 +75,5 @@ You'll need a [Captain API Token](https://www.rwx.com/captain/docs/api-tokens) t
 You should configure the build step to run even if the test suite fails by adding `if: always()`.
 This will enable Captain to provide functionality related to test failures, such as identifying flaky tests.
 
-We also recommend setting `continue-on-error: true` so that any errors uploading artifacts will not cause your entire build to fail.
+We also recommend setting `continue-on-error: true` so that any errors uploading artifacts will not cause your entire
+build to fail.

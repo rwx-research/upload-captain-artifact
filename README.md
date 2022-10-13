@@ -82,6 +82,7 @@ build to fail.
 
 Here are example repositories which use this action with
 
-- [RSpec](https://github.com/captain-examples/RSpec)
 - [Jest](https://github.com/captain-examples/jest)
+- [pytest](https://github.com/captain-examples/pytest)
+- [RSpec](https://github.com/captain-examples/RSpec)
 - [xUnit](https://github.com/captain-examples/xunit2)

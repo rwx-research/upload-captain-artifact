@@ -4,7 +4,9 @@ This action uploads test results to [Captain](https://captain.build/).
 
 Captain is a build and test suite performance management platform.
 
-You'll need a [Captain API Token](https://www.rwx.com/captain/docs/api-tokens) to use this Action.
+You'll need an [API Token](https://captain.build/deep_link/manage/access_tokens) to use this Action. Set it as a secret
+in your repo for the action to work. Conventionally, we call this secret `CAPTAIN_TOKEN`. More documentation on api
+tokens [here](https://www.rwx.com/captain/docs/api-tokens).
 
 ## Usage
 

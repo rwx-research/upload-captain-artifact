@@ -32,10 +32,14 @@ export default async function run(): Promise<void> {
     if ((validatedInputs as Invalid).errors) {
       const errors = (validatedInputs as Invalid).errors
       for (const error of errors) {
-        core.error(error)
+        core.warning(error)
       }
-      core.setFailed(
-        "Captain Uploader Action is misconfigured and can't upload test results. Please address error(s) above in the GitHub workflow and try again."
+      core.warning(
+        [
+          "Captain Uploader Action is misconfigured and can't upload test results.",
+          'Please address error(s) above in the GitHub workflow and try again.',
+          'These warnings will be errors in version 2'
+        ].join('\n')
       )
       return
     }

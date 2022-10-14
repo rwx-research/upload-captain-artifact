@@ -70,19 +70,21 @@ export function getInputs(): ValidatedInputs {
   try {
     artifacts = JSON.parse(core.getInput('artifacts')) as InputArtifact[]
     if (artifacts.length === 0) {
-      errors.push('No artifacts found in action definition.')
+      errors.push(
+        'You must include at least one artifact in the `artifacts` field.'
+      )
     }
   } catch (e) {
-    errors.push("Can't parse artifacts field as JSON.")
+    errors.push(
+      "`artifacts` field isn't valid json. Please check your github action syntax!."
+    )
     artifacts = []
   }
 
   const captainToken = core.getInput('captain-token')
 
-  if (captainToken.length === 0) {
-    errors.push(
-      "Can't communicate with captain because no captain token found."
-    )
+  if (!captainToken || captainToken.trim().length === 0) {
+    errors.push("`captain_token` field can't be empty.")
   }
 
   if (errors.length !== 0) {

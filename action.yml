@@ -28,17 +28,13 @@ inputs:
         - ignore: Output neither a warning nor an error; the action will succeed.
         - warn (default): Output a warning; the action will succeed.
         - error: Output an error; the action will fail.
-
   job-name:
     required: false
     description: >
       This is required if you set the `name` property on your job.
       If you provided a name, set that same value here.
-
   job-matrix:
     required: false
-    description: |
-      If you are using a job matrix, set this to `job-matrix: '${{ toJSON(matrix) }}'`
 
   captain-token:
     required: true

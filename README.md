@@ -26,7 +26,6 @@ tokens [here](https://www.rwx.com/captain/docs/api-tokens).
     #   - junit_xml
     #   - rspec_json
     #   - xunit_dot_net_xml
-
     artifacts: |
       [
         {

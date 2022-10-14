@@ -11,7 +11,13 @@ import {
   updateBulkArtifactsStatus,
   BulkArtifactStatus
 } from './api/captain'
-import {getInputs, mimeTypeFromExtension, InputArtifact} from './utils'
+import {
+  getInputs,
+  mimeTypeFromExtension,
+  InputArtifact,
+  Invalid,
+  Valid
+} from './utils'
 
 type Artifact = InputArtifact & {
   mime_type: BulkArtifactMimeType
@@ -21,7 +27,24 @@ type Artifact = InputArtifact & {
 
 export default async function run(): Promise<void> {
   try {
-    const inputs = getInputs()
+    const validatedInputs = getInputs()
+
+    if ((validatedInputs as Invalid).errors) {
+      const errors = (validatedInputs as Invalid).errors
+      for (const error of errors) {
+        core.warning(error)
+      }
+      core.warning(
+        [
+          "Captain Uploader Action is misconfigured and can't upload test results.",
+          'Please address error(s) above in the GitHub workflow and try again.',
+          'These warnings will be errors in version 2'
+        ].join('\n')
+      )
+      return
+    }
+
+    const inputs = validatedInputs as Valid
     const artifacts: Artifact[] = inputs.artifacts
       .flatMap(artifact => {
         const expandedGlob = fastGlob.sync(artifact.path)

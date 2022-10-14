@@ -171,7 +171,20 @@ const utils_1 = __nccwpck_require__(918);
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            const inputs = (0, utils_1.getInputs)();
+            const validatedInputs = (0, utils_1.getInputs)();
+            if (validatedInputs.errors) {
+                const errors = validatedInputs.errors;
+                for (const error of errors) {
+                    core.warning(error);
+                }
+                core.warning([
+                    "Captain Uploader Action is misconfigured and can't upload test results.",
+                    'Please address error(s) above in the GitHub workflow and try again.',
+                    'These warnings will be errors in version 2'
+                ].join('\n'));
+                return;
+            }
+            const inputs = validatedInputs;
             const artifacts = inputs.artifacts
                 .flatMap(artifact => {
                 const expandedGlob = fastGlob.sync(artifact.path);
@@ -345,18 +358,39 @@ function runAttempt() {
 }
 function getInputs() {
     const matrix = core.getInput('job-matrix');
-    return {
-        accountName: github.context.repo.owner,
-        artifacts: JSON.parse(core.getInput('artifacts')),
-        ifFilesNotFound: parseIfFilesNotFound(core.getInput('if-files-not-found')),
-        jobMatrix: matrix ? JSON.parse(matrix) : null,
-        jobName: core.getInput('job-name') || github.context.job,
-        repositoryName: github.context.repo.repo,
-        runId: github.context.runId.toString(),
-        runAttempt: runAttempt(),
-        captainBaseUrl: core.getInput('captain-base-url'),
-        captainToken: core.getInput('captain-token')
-    };
+    const errors = [];
+    let artifacts;
+    try {
+        artifacts = JSON.parse(core.getInput('artifacts'));
+        if (artifacts.length === 0) {
+            errors.push('You must include at least one artifact in the `artifacts` field.');
+        }
+    }
+    catch (e) {
+        errors.push("`artifacts` field isn't valid JSON.");
+        artifacts = [];
+    }
+    const captainToken = core.getInput('captain-token');
+    if (!captainToken || captainToken.trim().length === 0) {
+        errors.push("`captain_token` field can't be empty.");
+    }
+    if (errors.length !== 0) {
+        return { errors };
+    }
+    else {
+        return {
+            accountName: github.context.repo.owner,
+            ifFilesNotFound: parseIfFilesNotFound(core.getInput('if-files-not-found')),
+            jobMatrix: matrix ? JSON.parse(matrix) : null,
+            jobName: core.getInput('job-name') || github.context.job,
+            repositoryName: github.context.repo.repo,
+            runId: github.context.runId.toString(),
+            runAttempt: runAttempt(),
+            captainBaseUrl: core.getInput('captain-base-url'),
+            artifacts,
+            captainToken
+        };
+    }
 }
 exports.getInputs = getInputs;
 

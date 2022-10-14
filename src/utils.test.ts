@@ -195,5 +195,63 @@ describe('Utils', () => {
         captainToken: 'fake-token'
       })
     })
+
+    it('leaves an error when artifacts are unparsable', () => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      ;(core.getInput as jest.Mock<any>).mockImplementation(input => {
+        if (input === 'artifacts') {
+          return '[{"]'
+        } else if (input === 'captain-token') {
+          return 'fake-token'
+        }
+      })
+
+      expect(getInputs()).toEqual({
+        errors: ["`artifacts` field isn't valid JSON."]
+      })
+    })
+
+    it('leaves an error when artifacts is empty', () => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      ;(core.getInput as jest.Mock<any>).mockImplementation(input => {
+        if (input === 'artifacts') {
+          return '[]'
+        } else if (input === 'captain-token') {
+          return 'fake-token'
+        }
+      })
+
+      expect(getInputs()).toEqual({
+        errors: [
+          'You must include at least one artifact in the `artifacts` field.'
+        ]
+      })
+    })
+
+    it('leaves an error when captain_token is missing', () => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      ;(core.getInput as jest.Mock<any>).mockImplementation(input => {
+        if (input === 'artifacts') {
+          return '[{"kind": "test_results", "name": "Some Name", "path": "some_path.json"}]'
+        }
+      })
+
+      expect(getInputs()).toEqual({
+        errors: ["`captain_token` field can't be empty."]
+      })
+
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      ;(core.getInput as jest.Mock<any>).mockImplementation(input => {
+        if (input === 'artifacts') {
+          return '[{"kind": "test_results", "name": "Some Name", "path": "some_path.json"}]'
+        } else if (input === 'captain-token') {
+          return ''
+        }
+      })
+
+      expect(getInputs()).toEqual({
+        errors: ["`captain_token` field can't be empty."]
+      })
+    })
   })
 })

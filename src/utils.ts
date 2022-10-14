@@ -58,18 +58,49 @@ function runAttempt(): number {
   return parseInt(githubRunAttempt)
 }
 
-export function getInputs(): Inputs {
+export type Valid = Inputs
+export type Invalid = {errors: string[]}
+export type ValidatedInputs = Valid | Invalid
+
+export function getInputs(): ValidatedInputs {
   const matrix = core.getInput('job-matrix')
-  return {
-    accountName: github.context.repo.owner,
-    artifacts: JSON.parse(core.getInput('artifacts')) as InputArtifact[],
-    ifFilesNotFound: parseIfFilesNotFound(core.getInput('if-files-not-found')),
-    jobMatrix: matrix ? JSON.parse(matrix) : null,
-    jobName: core.getInput('job-name') || github.context.job,
-    repositoryName: github.context.repo.repo,
-    runId: github.context.runId.toString(),
-    runAttempt: runAttempt(),
-    captainBaseUrl: core.getInput('captain-base-url'),
-    captainToken: core.getInput('captain-token')
+  const errors = []
+  let artifacts: InputArtifact[]
+
+  try {
+    artifacts = JSON.parse(core.getInput('artifacts')) as InputArtifact[]
+    if (artifacts.length === 0) {
+      errors.push(
+        'You must include at least one artifact in the `artifacts` field.'
+      )
+    }
+  } catch (e) {
+    errors.push("`artifacts` field isn't valid JSON.")
+    artifacts = []
+  }
+
+  const captainToken = core.getInput('captain-token')
+
+  if (!captainToken || captainToken.trim().length === 0) {
+    errors.push("`captain_token` field can't be empty.")
+  }
+
+  if (errors.length !== 0) {
+    return {errors}
+  } else {
+    return {
+      accountName: github.context.repo.owner,
+      ifFilesNotFound: parseIfFilesNotFound(
+        core.getInput('if-files-not-found')
+      ),
+      jobMatrix: matrix ? JSON.parse(matrix) : null,
+      jobName: core.getInput('job-name') || github.context.job,
+      repositoryName: github.context.repo.repo,
+      runId: github.context.runId.toString(),
+      runAttempt: runAttempt(),
+      captainBaseUrl: core.getInput('captain-base-url'),
+      artifacts,
+      captainToken
+    }
   }
 }

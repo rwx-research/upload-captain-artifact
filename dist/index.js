@@ -175,9 +175,13 @@ function run() {
             if (validatedInputs.errors) {
                 const errors = validatedInputs.errors;
                 for (const error of errors) {
-                    core.error(error);
+                    core.warning(error);
                 }
-                core.setFailed("Captain Uploader Action is misconfigured and can't upload test results. Please address error(s) above in the GitHub workflow and try again.");
+                core.warning([
+                    "Captain Uploader Action is misconfigured and can't upload test results.",
+                    'Please address error(s) above in the GitHub workflow and try again.',
+                    'These warnings will be errors in version 2'
+                ].join('\n'));
                 return;
             }
             const inputs = validatedInputs;

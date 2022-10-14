@@ -69,7 +69,7 @@ You'll need a [Captain API Token](https://www.rwx.com/captain/docs/api-tokens) t
           "parser": "rspec_json"
         }
       ]
-    captain-token: '${{ secrets.CAPTAIN_API_TOKEN }}'
+    captain-token: '${{ secrets.CAPTAIN_TOKEN }}'
 ```
 
 You should configure the build step to run even if the test suite fails by adding `if: always()`.

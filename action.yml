@@ -23,7 +23,9 @@ inputs:
       This is required if you set the `name` property on your job.
       If you provided a name, set that same value here.
   job-matrix:
-    required: true
+    required: false
+    description: |
+      If you are using a job matrix, set this to `job-matrix: '${{ toJSON(matrix) }}'`
   captain-token:
     required: true
   captain-base-url:

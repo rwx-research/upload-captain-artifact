@@ -5,7 +5,7 @@ This action uploads test results to [Captain](https://captain.build/).
 Captain is a build and test suite performance management platform.
 
 You'll need an [API Token](https://captain.build/deep_link/manage/access_tokens) to use this Action. Set it as a secret
-in your repo for the action to work. Conventionally, we call this secret `CAPTAIN_TOKEN`. More documentation on api
+in your repo. Conventionally, we call this secret `CAPTAIN_TOKEN`. More documentation on api
 tokens [here](https://www.rwx.com/captain/docs/api-tokens).
 
 ## Usage
@@ -16,10 +16,11 @@ tokens [here](https://www.rwx.com/captain/docs/api-tokens).
   continue-on-error: true
   with:
     # Required.
-    # name: how the artifact will be shown in captain
-    # path: path to test result. This field supports bash globbing (e.g. **/*).
-    # kind: for now, this should always be "test_results"
-    # parser: one of
+    # this is a json array of objects with fields...
+    # - name: how the artifact will be shown in captain
+    # - path: path to test result. This field supports bash globbing (e.g. **/*).
+    # - kind: for now, this should always be "test_results"
+    # - parser: one of
     #   - cypress_junit_xml
     #   - jest_json
     #   - junit_xml
@@ -38,7 +39,7 @@ tokens [here](https://www.rwx.com/captain/docs/api-tokens).
 
     # Required.
     # https://www.rwx.com/captain/docs/api-tokens
-    captain-token: ''
+    captain-token: '${{ secrets.CAPTAIN_TOKEN }}'
 
     # This is required if you set the `name` property on your job.
     # If you provided a name, set that same value here.

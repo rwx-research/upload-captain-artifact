@@ -174,11 +174,10 @@ function run() {
             const validatedInputs = (0, utils_1.getInputs)();
             if (validatedInputs.errors) {
                 const errors = validatedInputs.errors;
-                core.error('Captain Uploader Action is misconfigured.');
                 for (const error of errors) {
                     core.error(error);
                 }
-                core.setFailed('Captain Uploader Action is misconfigured');
+                core.setFailed("Captain Uploader Action is misconfigured and can't upload test results. Please address error(s) above in the GitHub workflow and try again.");
                 return;
             }
             const inputs = validatedInputs;
@@ -364,7 +363,7 @@ function getInputs() {
         }
     }
     catch (e) {
-        errors.push("`artifacts` field isn't valid json. Please check your github action syntax!.");
+        errors.push("`artifacts` field isn't valid JSON.");
         artifacts = [];
     }
     const captainToken = core.getInput('captain-token');

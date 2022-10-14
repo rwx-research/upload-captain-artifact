@@ -75,9 +75,7 @@ export function getInputs(): ValidatedInputs {
       )
     }
   } catch (e) {
-    errors.push(
-      "`artifacts` field isn't valid json. Please check your github action syntax!."
-    )
+    errors.push("`artifacts` field isn't valid JSON.")
     artifacts = []
   }
 

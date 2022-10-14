@@ -207,9 +207,7 @@ describe('Utils', () => {
       })
 
       expect(getInputs()).toEqual({
-        errors: [
-          "`artifacts` field isn't valid json. Please check your github action syntax!."
-        ]
+        errors: ["`artifacts` field isn't valid JSON."]
       })
     })
 

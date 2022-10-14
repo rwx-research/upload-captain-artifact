@@ -58,18 +58,49 @@ function runAttempt(): number {
   return parseInt(githubRunAttempt)
 }
 
-export function getInputs(): Inputs {
+export type Valid = Inputs
+export type Invalid = {errors: string[]}
+export type ValidatedInputs = Valid | Invalid
+
+export function getInputs(): ValidatedInputs {
   const matrix = core.getInput('job-matrix')
-  return {
-    accountName: github.context.repo.owner,
-    artifacts: JSON.parse(core.getInput('artifacts')) as InputArtifact[],
-    ifFilesNotFound: parseIfFilesNotFound(core.getInput('if-files-not-found')),
-    jobMatrix: matrix ? JSON.parse(matrix) : null,
-    jobName: core.getInput('job-name') || github.context.job,
-    repositoryName: github.context.repo.repo,
-    runId: github.context.runId.toString(),
-    runAttempt: runAttempt(),
-    captainBaseUrl: core.getInput('captain-base-url'),
-    captainToken: core.getInput('captain-token')
+  const errors = []
+  let artifacts: InputArtifact[]
+
+  try {
+    artifacts = JSON.parse(core.getInput('artifacts')) as InputArtifact[]
+    if (artifacts.length === 0) {
+      errors.push('No artifacts found in action definition.')
+    }
+  } catch (e) {
+    errors.push("Can't parse artifacts field as JSON.")
+    artifacts = []
+  }
+
+  const captainToken = core.getInput('captain-token')
+
+  if (captainToken.length === 0) {
+    errors.push(
+      "Can't communicate with captain because no captain token found."
+    )
+  }
+
+  if (errors.length !== 0) {
+    return {errors}
+  } else {
+    return {
+      accountName: github.context.repo.owner,
+      ifFilesNotFound: parseIfFilesNotFound(
+        core.getInput('if-files-not-found')
+      ),
+      jobMatrix: matrix ? JSON.parse(matrix) : null,
+      jobName: core.getInput('job-name') || github.context.job,
+      repositoryName: github.context.repo.repo,
+      runId: github.context.runId.toString(),
+      runAttempt: runAttempt(),
+      captainBaseUrl: core.getInput('captain-base-url'),
+      artifacts,
+      captainToken
+    }
   }
 }

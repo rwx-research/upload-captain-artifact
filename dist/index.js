@@ -171,7 +171,17 @@ const utils_1 = __nccwpck_require__(918);
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            const inputs = (0, utils_1.getInputs)();
+            const validatedInputs = (0, utils_1.getInputs)();
+            if (validatedInputs.errors) {
+                const errors = validatedInputs.errors;
+                core.error('Captain Uploader Action is misconfigured.');
+                for (const error of errors) {
+                    core.error(error);
+                }
+                core.setFailed('Captain Uploader Action is misconfigured');
+                return;
+            }
+            const inputs = validatedInputs;
             const artifacts = inputs.artifacts
                 .flatMap(artifact => {
                 const expandedGlob = fastGlob.sync(artifact.path);
@@ -345,18 +355,39 @@ function runAttempt() {
 }
 function getInputs() {
     const matrix = core.getInput('job-matrix');
-    return {
-        accountName: github.context.repo.owner,
-        artifacts: JSON.parse(core.getInput('artifacts')),
-        ifFilesNotFound: parseIfFilesNotFound(core.getInput('if-files-not-found')),
-        jobMatrix: matrix ? JSON.parse(matrix) : null,
-        jobName: core.getInput('job-name') || github.context.job,
-        repositoryName: github.context.repo.repo,
-        runId: github.context.runId.toString(),
-        runAttempt: runAttempt(),
-        captainBaseUrl: core.getInput('captain-base-url'),
-        captainToken: core.getInput('captain-token')
-    };
+    const errors = [];
+    let artifacts;
+    try {
+        artifacts = JSON.parse(core.getInput('artifacts'));
+        if (artifacts.length === 0) {
+            errors.push('No artifacts found in action definition.');
+        }
+    }
+    catch (e) {
+        errors.push("Can't parse artifacts field as JSON.");
+        artifacts = [];
+    }
+    const captainToken = core.getInput('captain-token');
+    if (captainToken.length === 0) {
+        errors.push("Can't communicate with captain because no captain token found.");
+    }
+    if (errors.length !== 0) {
+        return { errors };
+    }
+    else {
+        return {
+            accountName: github.context.repo.owner,
+            ifFilesNotFound: parseIfFilesNotFound(core.getInput('if-files-not-found')),
+            jobMatrix: matrix ? JSON.parse(matrix) : null,
+            jobName: core.getInput('job-name') || github.context.job,
+            repositoryName: github.context.repo.repo,
+            runId: github.context.runId.toString(),
+            runAttempt: runAttempt(),
+            captainBaseUrl: core.getInput('captain-base-url'),
+            artifacts,
+            captainToken
+        };
+    }
 }
 exports.getInputs = getInputs;
 

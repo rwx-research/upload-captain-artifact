@@ -8,12 +8,35 @@ You'll need an [API Token](https://captain.build/deep_link/manage/access_tokens)
 in your repo. Conventionally, we call this secret `CAPTAIN_TOKEN`. More documentation on api
 tokens [here](https://www.rwx.com/captain/docs/api-tokens).
 
+## Configure Test Framework
+
+Before you can upload your test results, you'll need to configure your test framework to write the test results to a file.
+Here's the documentation for how to configure reporters in several of the most popular testing frameworks.
+We're working on building support for additional frameworks.
+If you'd like us to prioritize any one in particular, please [let us know](https://www.rwx.com/support).
+
+- [Jest](https://github.com/captain-examples/jest)
+- [JUnit with Maven](https://github.com/captain-examples/junit5)
+- [pytest](https://github.com/captain-examples/pytest)
+- [RSpec](https://github.com/captain-examples/RSpec)
+- [xUnit](https://github.com/captain-examples/xunit2)
+
+
 ## Usage
+
+Once you have your test framework configured to write its test results to a file, you're ready to upload them into Captain.
 
 ```yaml
 - uses: rwx-research/upload-captain-artifact@v1
+
+  # You should configure the build step to run even if the test suite fails by adding `if: always()`.
+  # This will enable Captain to provide functionality related to test failures, such as identifying flaky tests.
   if: always()
+
+  # We also recommend setting `continue-on-error: true` so that any errors uploading test results
+  # will not cause your entire build to fail.
   continue-on-error: true
+
   with:
     # Required.
     # this is a json array of objects with fields...
@@ -73,19 +96,3 @@ tokens [here](https://www.rwx.com/captain/docs/api-tokens).
       ]
     captain-token: '${{ secrets.CAPTAIN_TOKEN }}'
 ```
-
-You should configure the build step to run even if the test suite fails by adding `if: always()`.
-This will enable Captain to provide functionality related to test failures, such as identifying flaky tests.
-
-We also recommend setting `continue-on-error: true` so that any errors uploading artifacts will not cause your entire
-build to fail.
-
-## Reference Implementations
-
-Here are example repositories which use this action with
-
-- [Jest](https://github.com/captain-examples/jest)
-- [JUnit with Maven](https://github.com/captain-examples/junit5)
-- [pytest](https://github.com/captain-examples/pytest)
-- [RSpec](https://github.com/captain-examples/RSpec)
-- [xUnit](https://github.com/captain-examples/xunit2)

@@ -228,7 +228,7 @@ describe('Utils', () => {
       })
     })
 
-    it('leaves an error when captain_token is missing', () => {
+    it('leaves an error when captain-token is missing', () => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       ;(core.getInput as jest.Mock<any>).mockImplementation(input => {
         if (input === 'artifacts') {
@@ -237,7 +237,7 @@ describe('Utils', () => {
       })
 
       expect(getInputs()).toEqual({
-        errors: ["`captain_token` field can't be empty."]
+        errors: ["`captain-token` field can't be empty."]
       })
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -250,7 +250,7 @@ describe('Utils', () => {
       })
 
       expect(getInputs()).toEqual({
-        errors: ["`captain_token` field can't be empty."]
+        errors: ["`captain-token` field can't be empty."]
       })
     })
   })

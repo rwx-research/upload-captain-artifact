@@ -372,7 +372,7 @@ function getInputs() {
     }
     const captainToken = core.getInput('captain-token');
     if (!captainToken || captainToken.trim().length === 0) {
-        errors.push("`captain_token` field can't be empty.");
+        errors.push("`captain-token` field can't be empty.");
     }
     if (errors.length !== 0) {
         return { errors };

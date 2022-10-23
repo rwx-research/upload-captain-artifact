@@ -35,5 +35,33 @@ if ! gh auth status; then
 fi
 
 # 1. if package.json is the same as the latest tag, update package.json & create PR
+package_version="$(jq <package.json .version)"
+latest_tag="$(git tag | grep "^v" | sort | tail -n 1])"
+
+if [ $package_version == $latest_tag ]; then
+  echo "what version do you want to update?"
+  PS3='what version would you like to update?: '
+  patch="bug fixes or improvements, 0.0.1 -> 0.0.2"
+  minor="enhancements, 0.0.0 -> 0.1.0"
+  major="breaking changes, 0.0.0 -> 1.0.0"
+  options=("$patch" "$minor" "$major" "Quit")
+  select opt in "${options[@]}"; do
+    case $opt in
+    "$patch")
+      echo "you chose choice 1"
+      ;;
+    "$minor")
+      echo "you chose choice 2"
+      ;;
+    "$major")
+      echo "you chose choice $REPLY which is $opt"
+      ;;
+    "Quit")
+      break
+      ;;
+    *) echo "invalid option $REPLY" ;;
+    esac
+  done
+fi
 
 # 2. Create github release with new tag

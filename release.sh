@@ -2,11 +2,14 @@
 set -Eeuo pipefail
 
 # 0. Check that there's no changes and that we're on the v1 branch
-if [ ! -z "$(git status --porcelain)" ]; then
-  echo "not empty"
-else
+if [ -n "$(git status --porcelain)" ]; then
+  echo "please commit or stash changes before trying to create a new release"
+  exit 1
+fi
 
-  echo "empty"
+if [ "$(git branch --show-current)" != "v1" ]; then
+  echo "You can only release this action from the v1 branch"
+  exit 1
 fi
 
 # 1.

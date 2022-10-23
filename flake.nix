@@ -20,6 +20,7 @@
               shfmt
               shellcheck
               gh
+              jq
             ];
         };
       });

@@ -17,7 +17,7 @@ jobs:
       - name: Ensure the expected and actual dist/ directories are the same
         run: |
           if [ "$(git diff --ignore-space-at-eol dist/ | wc -l)" -gt "0" ]; then
-            echo "Detected uncommitted changes after build.  See status below:"
+            echo "Detected uncommitted changes after `npm run all`.  See status below:"
             git diff
             exit 1
           fi
@@ -50,3 +50,20 @@ jobs:
           job-matrix: "${{ toJSON(matrix) }}"
           captain-token: "${{ secrets.VANGUARD_STAGING_RWX_TOKEN }}"
           captain-base-url: "${{ secrets.VANGUARD_STAGING_BASE_URL }}"
+  nix_fmt:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: cachix/install-nix-action@v18
+      - run: nix fmt
+      - run: |
+          git_leftovers=$(git status --porcelain)
+          if [ -z $git_leftovers ]
+          then
+            echo "✅ nix fmt didn't change anything"
+          else
+            echo "❌ unformatted changes left behind"
+            git diff
+            git status --porcelain
+            exit 1
+          fi

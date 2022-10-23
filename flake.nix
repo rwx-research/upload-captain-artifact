@@ -17,6 +17,9 @@
           packages = with pkgs;
             [
               nodejs # locked to 16.16.0
+              shfmt
+              shellcheck
+              gh
             ];
         };
       });

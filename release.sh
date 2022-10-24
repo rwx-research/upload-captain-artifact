@@ -80,3 +80,23 @@ if [ "v$package_version" == $latest_tag ]; then
 fi
 
 # 2. Create github release with new tag
+release_notes=$(
+  cat <<RELEASE_TEMPLATE
+# 🙈 $package_version Title of Github Release Prefixed By Version and Fun Emoji!
+
+PLEASE REPLACE THIS RELEASE TEMPLATE. IT WILL POPULATE THE GITHUB RELEASE !
+
+In This Release, we did some excellent things.
+
+# 🪙 Changelog 🪵
+## Bugs
+- fixed a cool bug [#123] (thanks @Janice !)
+## Enhancements
+- now we can do spacetravel[#1337] (cheers to @Bobak ! )
+RELEASE_TEMPLATE
+)
+
+echo "releasing draft version $package_version"
+gh release create "v$package_version" --title "v$package_version" --draft --notes "$release_notes"
+
+echo "✅ Draft release pushed to github. Edit the changelog and release it in the github UI!"

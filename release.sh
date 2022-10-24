@@ -35,33 +35,48 @@ if ! gh auth status; then
 fi
 
 # 1. if package.json is the same as the latest tag, update package.json & create PR
-package_version="$(jq <package.json .version)"
-latest_tag="$(git tag | grep "^v" | sort | tail -n 1])"
+package_version="$(jq -r .version <package.json)"
+latest_tag="$(git tag | grep "^v" | sort | tail -n 1)"
+IFS=. read major minor patch <<<"${package_version}"
 
-if [ $package_version == $latest_tag ]; then
-  echo "what version do you want to update?"
+if [ "v$package_version" == $latest_tag ]; then
+  echo "current version is $package_version"
   PS3='what version would you like to update?: '
-  patch="bug fixes or improvements, 0.0.1 -> 0.0.2"
-  minor="enhancements, 0.0.0 -> 0.1.0"
-  major="breaking changes, 0.0.0 -> 1.0.0"
-  options=("$patch" "$minor" "$major" "Quit")
+  next_patch="$major.$minor.$(($patch + 1))"
+  patch_msg="patch (bug fixes or improvements) $next_patch"
+  next_minor="$major.$(($minor + 1)).$patch"
+  minor_msg="minor (enhancements) $next_minor"
+  next_major="$(($major + 1)).$minor.$patch"
+  major_msg="major (breaking changes) $next_major"
+  options=("$patch_msg" "$minor_msg" "$major_msg")
   select opt in "${options[@]}"; do
     case $opt in
-    "$patch")
-      echo "you chose choice 1"
+    "$patch_msg")
+      bump_version="patch"
+      next_version=$next_patch
+      break
       ;;
-    "$minor")
-      echo "you chose choice 2"
+    "$minor_msg")
+      bump_version="minor"
+      next_version=$next_minor
+      break
       ;;
-    "$major")
-      echo "you chose choice $REPLY which is $opt"
-      ;;
-    "Quit")
+    "$major_msg")
+      bump_version="major"
+      next_version=$next_major
       break
       ;;
     *) echo "invalid option $REPLY" ;;
     esac
   done
+
+  npm version --no-git-tag-version "$bump_version"
+  git checkout -b release-$next_version
+  git commit -m "bump version to $next_version"
+  gh pr create --title "prepare release v$next_version" --fill
+  git checkout v1
+  echo "✅ Please merge the v1 branch and call this script again"
+  exit 0
 fi
 
 # 2. Create github release with new tag

@@ -9,7 +9,12 @@ import {
   BulkArtifact,
   BulkArtifactMimeType,
   updateBulkArtifactsStatus,
-  BulkArtifactStatus
+  BulkArtifactStatus,
+  createBulkTestResults,
+  BulkTestResultsUploads,
+  updateBulkTestResults,
+  BulkTestResultsFiles,
+  TestResultsUpload
 } from './api/captain'
 import {
   getInputs,
@@ -94,22 +99,25 @@ export default async function run(): Promise<void> {
       }
     }
 
-    const bulkArtifactsResult = await createBulkArtifacts(
+    const bulkArtifactsResult = await createBulkTestResults(
       {
-        account_name: inputs.accountName,
-        artifacts: artifacts.map(artifact => ({
-          kind: artifact.kind,
-          name: artifact.name,
-          parser: artifact.parser,
-          mime_type: artifact.mime_type,
-          external_id: artifact.external_id,
+        provider: 'github',
+        branch: inputs.branchName,
+        commit_sha: inputs.commitSha,
+        test_suite_identifier: artifacts[0].name,
+        job_tags: {
+          github_run_id: inputs.runId,
+          github_run_attempt: inputs.runAttempt.toString(),
+          github_repository_name: inputs.repositoryName,
+          github_account_owner: inputs.accountName,
+          github_job_matrix: inputs.jobMatrix,
+          github_job_name: inputs.jobName
+        },
+        test_results_files: artifacts.map(artifact => ({
+          external_identifier: artifact.external_id,
+          format: artifact.parser,
           original_path: artifact.original_path
-        })),
-        job_name: inputs.jobName,
-        job_matrix: inputs.jobMatrix,
-        repository_name: inputs.repositoryName,
-        run_attempt: inputs.runAttempt,
-        run_id: inputs.runId
+        }))
       },
       {
         captainBaseUrl: inputs.captainBaseUrl,
@@ -129,28 +137,38 @@ export default async function run(): Promise<void> {
       uploadEach(bulkArtifactsResult.value, artifactsWithFiles)
     )
 
-    const uploadedExternalIds = uploadResponses
+    const uploadedTestResultUploads = uploadResponses
       .filter(([, response]) => response.ok)
-      .map(([artifact]) => artifact.external_id)
+      .map(([testResultUpload]) => testResultUpload)
 
-    const failedArtifacts = uploadResponses
+    const failedTestResultUploads = uploadResponses
       .filter(([, response]) => !response.ok)
-      .map(([artifact]) => artifact)
+      .map(([testResultUpload]) => testResultUpload)
+
+    const testResultUploadsWithoutFiles = artifactsWithoutFiles.map(
+      artifact =>
+        (
+          uploadResponses.find(([testResultUpload]) => {
+            testResultUpload.external_identifier === artifact.external_id
+          }) as [TestResultsUpload, Response]
+        )[0]
+    )
 
     // intentionally ignore any potential errors here- if it fails,
     // our server will eventually find out the files were uploaded
-    await updateBulkArtifactsStatus(
+    await updateBulkTestResults(
+      artifacts[0].name,
       [
-        uploadedExternalIds.map(externalId => ({
-          external_id: externalId,
+        uploadedTestResultUploads.map(testResultsUpload => ({
+          id: testResultsUpload.id,
           status: 'uploaded' as BulkArtifactStatus
         })),
-        failedArtifacts.map(artifact => ({
-          external_id: artifact.external_id,
+        failedTestResultUploads.map(testResultsUpload => ({
+          id: testResultsUpload.id,
           status: 'upload_failed' as BulkArtifactStatus
         })),
-        artifactsWithoutFiles.map(artifact => ({
-          external_id: artifact.external_id,
+        testResultUploadsWithoutFiles.map(testResultsUpload => ({
+          id: testResultsUpload.id,
           status: 'upload_skipped_file_missing' as BulkArtifactStatus
         }))
       ].flat(),
@@ -160,11 +178,18 @@ export default async function run(): Promise<void> {
       }
     )
 
-    if (failedArtifacts.length) {
+    if (failedTestResultUploads.length) {
+      const failedArtifactNames = failedTestResultUploads
+        .map(testResultUpload => {
+          const artifact = artifacts.find(
+            artifact =>
+              artifact.external_id === testResultUpload.external_identifier
+          ) as Artifact
+          return artifact.name
+        })
+        .join(', ')
       throw new Error(
-        `Some artifacts could not be uploaded:\n\n  Artifacts: ${failedArtifacts
-          .map(artifact => artifact.name)
-          .join(', ')}`
+        `Some artifacts could not be uploaded:\n\n  Artifacts: ${failedArtifactNames}`
       )
     }
   } catch (error) {
@@ -175,25 +200,25 @@ export default async function run(): Promise<void> {
 }
 
 function uploadEach(
-  bulkArtifacts: BulkArtifact[],
+  bulkArtifacts: TestResultsUpload[],
   artifactsWithFiles: Artifact[]
-): Promise<[Artifact, Response]>[] {
+): Promise<[TestResultsUpload, Response]>[] {
   return artifactsWithFiles.map(async artifact => {
-    const bulkArtifact = bulkArtifacts.find(
-      ba => ba.external_id === artifact.external_id
+    const testResultUpload = bulkArtifacts.find(
+      ba => ba.external_identifier === artifact.external_id
     )
 
-    if (!bulkArtifact) {
+    if (!testResultUpload) {
       throw new Error(
         'Unreachable (could not find bulk artifact with matching external ID)'
       )
     }
 
-    const response = await fetch(bulkArtifact.upload_url, {
+    const response = await fetch(testResultUpload.upload_url, {
       body: readFileSync(artifact.path),
       method: 'PUT'
     })
 
-    return [artifact, response] as [Artifact, Response]
+    return [testResultUpload, response] as [TestResultsUpload, Response]
   })
 }

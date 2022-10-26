@@ -33,6 +33,32 @@ type BulkArtifactsInput = {
   run_attempt: number
   run_id: string
 }
+export type TestResultsUpload = {
+  id: string
+  external_identifier: string
+  upload_url: string
+}
+export type BulkTestResultsFiles = {id: string; upload_status: BulkArtifactStatus}
+export type BulkTestResultsUploads = Result<TestResultsUpload[], Error[]>
+type BulkTestResultsCreate = {
+  provider: string
+  branch: string
+  commit_sha: string
+  test_suite_identifier: string
+  job_tags: {
+    github_run_id: string
+    github_run_attempt: string
+    github_repository_name: string
+    github_account_owner: string
+    github_job_matrix: object | null
+    github_job_name: string
+  }
+  test_results_files: {
+    external_identifier: string
+    format?: BulkArtifactParser
+    original_path: string
+  }[]
+}
 type CaptainConfig = {
   captainBaseUrl: string
   captainToken: string
@@ -97,6 +123,83 @@ export async function updateBulkArtifactsStatus(
     `${config.captainBaseUrl}/api/organization/integrations/github/bulk_artifacts/status`,
     {
       body: JSON.stringify({artifacts: bulkStatuses}),
+      method: 'PUT',
+      headers: {
+        Authorization: `Bearer ${config.captainToken}`,
+        'Content-Type': 'application/json'
+      }
+    }
+  )
+
+  if (response.ok) {
+    return {ok: true, value: null}
+  } else {
+    try {
+      return {
+        ok: false,
+        error:
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          ((await response.json()) as any).errors ||
+          genericUpdateBulkArtifactsStatusError
+      }
+    } catch {
+      return {
+        ok: false,
+        error: genericUpdateBulkArtifactsStatusError
+      }
+    }
+  }
+}
+
+export async function createBulkTestResults(
+  input: BulkTestResultsCreate,
+  config: CaptainConfig
+): Promise<BulkTestResultsUploads> {
+  const response = await fetch(
+    `${config.captainBaseUrl}/api/test_suites/bulk_test_results`,
+    {
+      body: JSON.stringify(input),
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${config.captainToken}`,
+        'Content-Type': 'application/json'
+      }
+    }
+  )
+
+  if (response.ok) {
+    return {
+      ok: true,
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      value: ((await response.json()) as any).test_results_uploads
+    }
+  } else {
+    try {
+      return {
+        ok: false,
+        error:
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          ((await response.json()) as any).errors ||
+          genericCreateBulkArtifactsError
+      }
+    } catch {
+      return {
+        ok: false,
+        error: genericCreateBulkArtifactsError
+      }
+    }
+  }
+}
+
+export async function updateBulkTestResults(
+  testSuite: string,
+  bulkStatuses: BulkTestResultsFiles[],
+  config: CaptainConfig
+): Promise<Result<null, Error[]>> {
+  const response = await fetch(
+    `${config.captainBaseUrl}/api/test_suites/bulk_test_results`,
+    {
+      body: JSON.stringify({test_suite_identifier: testSuite, test_results_files: bulkStatuses}),
       method: 'PUT',
       headers: {
         Authorization: `Bearer ${config.captainToken}`,

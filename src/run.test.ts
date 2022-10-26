@@ -51,7 +51,9 @@ describe('run', () => {
       runAttempt: 4,
       runId: '1234',
       captainBaseUrl: 'https://captain.example.com',
-      captainToken: 'fake-token'
+      captainToken: 'fake-token',
+      commitSha: 'something',
+      branchName: 'something'
     }
     mockGetInputs.mockReturnValueOnce(inputs)
     mockUuid.mockReturnValueOnce('uuid-one').mockReturnValueOnce('uuid-two')
@@ -148,7 +150,9 @@ describe('run', () => {
       runAttempt: 4,
       runId: '1234',
       captainBaseUrl: 'https://captain.example.com',
-      captainToken: 'fake-token'
+      captainToken: 'fake-token',
+      branchName: 'something',
+      commitSha: 'something'
     }
     mockGetInputs.mockReturnValueOnce(inputs)
     mockUuid.mockReturnValueOnce('uuid-one').mockReturnValueOnce('uuid-two')
@@ -243,7 +247,9 @@ describe('run', () => {
       runAttempt: 4,
       runId: '1234',
       captainBaseUrl: 'https://captain.example.com',
-      captainToken: 'fake-token'
+      captainToken: 'fake-token',
+      commitSha: 'soemthing',
+      branchName: 'asdade'
     }
     mockGetInputs.mockReturnValueOnce(inputs)
     mockUuid.mockReturnValueOnce('uuid-one').mockReturnValueOnce('uuid-two')
@@ -324,7 +330,9 @@ describe('run', () => {
       runAttempt: 4,
       runId: '1234',
       captainBaseUrl: 'https://captain.example.com',
-      captainToken: 'fake-token'
+      captainToken: 'fake-token',
+      branchName: 'something',
+      commitSha: 'derp'
     }
     mockGetInputs.mockReturnValueOnce(inputs)
     mockUuid.mockReturnValueOnce('uuid-one').mockReturnValueOnce('uuid-two')
@@ -405,7 +413,9 @@ describe('run', () => {
       runAttempt: 4,
       runId: '1234',
       captainBaseUrl: 'https://captain.example.com',
-      captainToken: 'fake-token'
+      captainToken: 'fake-token',
+      commitSha: 'asdf',
+      branchName: 'some-branch'
     }
     mockGetInputs.mockReturnValueOnce(inputs)
     mockUuid.mockReturnValueOnce('uuid-one').mockReturnValueOnce('uuid-two')
@@ -441,7 +451,9 @@ describe('run', () => {
       runAttempt: 4,
       runId: '1234',
       captainBaseUrl: 'https://captain.example.com',
-      captainToken: 'fake-token'
+      captainToken: 'fake-token',
+      commitSha: 'asdf',
+      branchName: 'some-branch'
     }
     mockGetInputs.mockReturnValueOnce(inputs)
     mockUuid.mockReturnValueOnce('uuid-one').mockReturnValueOnce('uuid-two')
@@ -518,7 +530,9 @@ describe('run', () => {
       runAttempt: 4,
       runId: '1234',
       captainBaseUrl: 'https://captain.example.com',
-      captainToken: 'fake-token'
+      captainToken: 'fake-token',
+      commitSha: 'asdf',
+      branchName: 'some-branch'
     }
     mockGetInputs.mockReturnValueOnce(inputs)
     mockUuid.mockReturnValueOnce('uuid-one').mockReturnValueOnce('uuid-two')
@@ -617,7 +631,9 @@ describe('run', () => {
       runAttempt: 4,
       runId: '1234',
       captainBaseUrl: 'https://captain.example.com',
-      captainToken: 'fake-token'
+      captainToken: 'fake-token',
+      commitSha: 'asdf',
+      branchName: 'some-branch'
     }
     mockGetInputs.mockReturnValueOnce(inputs)
     mockUuid.mockReturnValueOnce('uuid-one').mockReturnValueOnce('uuid-two')
@@ -716,7 +732,9 @@ describe('run', () => {
       runAttempt: 4,
       runId: '1234',
       captainBaseUrl: 'https://captain.example.com',
-      captainToken: 'fake-token'
+      captainToken: 'fake-token',
+      commitSha: 'asdf',
+      branchName: 'some-branch'
     }
     mockGetInputs.mockReturnValueOnce(inputs)
     mockUuid.mockReturnValueOnce('uuid-one').mockReturnValueOnce('uuid-two')
@@ -812,7 +830,9 @@ describe('run', () => {
         runAttempt: 4,
         runId: '1234',
         captainBaseUrl: 'https://captain.example.com',
-        captainToken: 'fake-token'
+        captainToken: 'fake-token',
+        commitSha: 'asdf',
+        branchName: 'some-branch'
       }
       mockGetInputs.mockReturnValueOnce(inputs)
       mockUuid.mockReturnValueOnce('uuid-one').mockReturnValueOnce('uuid-two')
@@ -905,7 +925,9 @@ describe('run', () => {
         runAttempt: 4,
         runId: '1234',
         captainBaseUrl: 'https://captain.example.com',
-        captainToken: 'fake-token'
+        captainToken: 'fake-token',
+        commitSha: 'asdf',
+        branchName: 'some-branch'
       }
       mockGetInputs.mockReturnValueOnce(inputs)
       mockUuid.mockReturnValueOnce('uuid-one').mockReturnValueOnce('uuid-two')
@@ -1006,7 +1028,9 @@ describe('run', () => {
         runAttempt: 4,
         runId: '1234',
         captainBaseUrl: 'https://captain.example.com',
-        captainToken: 'fake-token'
+        captainToken: 'fake-token',
+        commitSha: 'asdf',
+        branchName: 'some-branch'
       }
       mockGetInputs.mockReturnValueOnce(inputs)
       mockUuid.mockReturnValueOnce('uuid-one').mockReturnValueOnce('uuid-two')
@@ -1111,7 +1135,9 @@ describe('run', () => {
         runAttempt: 4,
         runId: '1234',
         captainBaseUrl: 'https://captain.example.com',
-        captainToken: 'fake-token'
+        captainToken: 'fake-token',
+        branchName: 'Some-branch',
+        commitSha: 'some-sha'
       }
       mockGetInputs.mockReturnValueOnce(inputs)
       mockUuid.mockReturnValueOnce('uuid-one').mockReturnValueOnce('uuid-two')
@@ -1208,7 +1234,9 @@ describe('run', () => {
         runAttempt: 4,
         runId: '1234',
         captainBaseUrl: 'https://captain.example.com',
-        captainToken: 'fake-token'
+        captainToken: 'fake-token',
+        branchName: 'Some-branch',
+        commitSha: 'some-sha'
       }
       mockGetInputs.mockReturnValueOnce(inputs)
       mockUuid.mockReturnValueOnce('uuid-one').mockReturnValueOnce('uuid-two')
@@ -1308,7 +1336,9 @@ describe('run', () => {
         runAttempt: 4,
         runId: '1234',
         captainBaseUrl: 'https://captain.example.com',
-        captainToken: 'fake-token'
+        captainToken: 'fake-token',
+        branchName: 'Some-branch',
+        commitSha: 'some-sha'
       }
       mockGetInputs.mockReturnValueOnce(inputs)
       mockUuid.mockReturnValueOnce('uuid-one').mockReturnValueOnce('uuid-two')

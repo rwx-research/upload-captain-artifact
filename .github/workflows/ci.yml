@@ -21,22 +21,9 @@ jobs:
             git diff
             exit 1
           fi
-      - name: Upload artifacts to captain production
-        uses: ./
-        with:
-          artifacts: |
-            [
-              {
-                "name": "Jest JUnit",
-                "path": "./junit.xml",
-                "kind": "test_results",
-                "parser": "junit_xml"
-              }
-            ]
-          job-matrix: "${{ toJSON(matrix) }}"
-          captain-token: "${{ secrets.VANGUARD_PRODUCTION_RWX_TOKEN }}"
       - name: Upload artifacts to captain staging
         uses: ./
+        if: always()
         with:
           artifacts: |
             [

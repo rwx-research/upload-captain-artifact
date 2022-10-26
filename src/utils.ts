@@ -24,6 +24,8 @@ export type Inputs = {
   runAttempt: number
   captainBaseUrl: string
   captainToken: string
+  branchName: string
+  commitSha: string
 }
 
 export function mimeTypeFromExtension(extension: string): BulkArtifactMimeType {
@@ -56,6 +58,28 @@ function runAttempt(): number {
   }
 
   return parseInt(githubRunAttempt)
+}
+
+function branchName(): string {
+  const branchName = process.env.GITHUB_HEAD_REF || process.env.GITHUB_REF_NAME
+
+  if (!branchName) {
+    throw new Error(
+      'process.env.GITHUB_HEAD_REF adn process.env.GITHUB_REF_NAME undefined'
+    )
+  }
+
+  return branchName
+}
+
+function commitSha(): string {
+  const commitSha = process.env.GITHUB_SHA
+
+  if (!commitSha) {
+    throw new Error('process.env.GITHUB_SHA was undefined')
+  }
+
+  return commitSha
 }
 
 export type Valid = Inputs
@@ -99,6 +123,8 @@ export function getInputs(): ValidatedInputs {
       runId: github.context.runId.toString(),
       runAttempt: runAttempt(),
       captainBaseUrl: core.getInput('captain-base-url'),
+      branchName: branchName(),
+      commitSha: commitSha(),
       artifacts,
       captainToken
     }

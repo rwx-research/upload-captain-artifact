@@ -19,7 +19,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.updateBulkArtifactsStatus = exports.createBulkArtifacts = void 0;
+exports.updateBulkTestResults = exports.createBulkTestResults = exports.updateBulkArtifactsStatus = exports.createBulkArtifacts = void 0;
 const node_fetch_1 = __importDefault(__nccwpck_require__(4429));
 const genericCreateBulkArtifactsError = [
     {
@@ -100,6 +100,76 @@ function updateBulkArtifactsStatus(bulkStatuses, config) {
     });
 }
 exports.updateBulkArtifactsStatus = updateBulkArtifactsStatus;
+function createBulkTestResults(input, config) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const response = yield (0, node_fetch_1.default)(`${config.captainBaseUrl}/api/test_suites/bulk_test_results`, {
+            body: JSON.stringify(input),
+            method: 'POST',
+            headers: {
+                Authorization: `Bearer ${config.captainToken}`,
+                'Content-Type': 'application/json'
+            }
+        });
+        if (response.ok) {
+            return {
+                ok: true,
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                value: (yield response.json()).test_results_uploads
+            };
+        }
+        else {
+            try {
+                return {
+                    ok: false,
+                    error: 
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                    (yield response.json()).errors ||
+                        genericCreateBulkArtifactsError
+                };
+            }
+            catch (_a) {
+                return {
+                    ok: false,
+                    error: genericCreateBulkArtifactsError
+                };
+            }
+        }
+    });
+}
+exports.createBulkTestResults = createBulkTestResults;
+function updateBulkTestResults(bulkStatuses, config) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const response = yield (0, node_fetch_1.default)(`${config.captainBaseUrl}/api/test_suites/bulk_test_results`, {
+            body: JSON.stringify({ test_results_files: bulkStatuses }),
+            method: 'PUT',
+            headers: {
+                Authorization: `Bearer ${config.captainToken}`,
+                'Content-Type': 'application/json'
+            }
+        });
+        if (response.ok) {
+            return { ok: true, value: null };
+        }
+        else {
+            try {
+                return {
+                    ok: false,
+                    error: 
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                    (yield response.json()).errors ||
+                        genericUpdateBulkArtifactsStatusError
+                };
+            }
+            catch (_a) {
+                return {
+                    ok: false,
+                    error: genericUpdateBulkArtifactsStatusError
+                };
+            }
+        }
+    });
+}
+exports.updateBulkTestResults = updateBulkTestResults;
 
 
 /***/ }),
@@ -217,21 +287,24 @@ function run() {
                     core.setFailed('Artifact(s) are missing file(s)');
                 }
             }
-            const bulkArtifactsResult = yield (0, captain_1.createBulkArtifacts)({
-                account_name: inputs.accountName,
-                artifacts: artifacts.map(artifact => ({
-                    kind: artifact.kind,
-                    name: artifact.name,
-                    parser: artifact.parser,
-                    mime_type: artifact.mime_type,
-                    external_id: artifact.external_id,
+            const bulkArtifactsResult = yield (0, captain_1.createBulkTestResults)({
+                provider: 'github',
+                branch: inputs.branchName,
+                commit_sha: inputs.commitSha,
+                test_suite_identifier: artifacts[0].name,
+                job_tags: {
+                    github_run_id: inputs.runId,
+                    github_run_attempt: inputs.runAttempt.toString(),
+                    github_repository_name: inputs.repositoryName,
+                    github_account_owner: inputs.accountName,
+                    github_job_matrix: inputs.jobMatrix,
+                    github_job_name: inputs.jobName
+                },
+                test_results_files: artifacts.map(artifact => ({
+                    external_identifier: artifact.external_id,
+                    format: artifact.parser,
                     original_path: artifact.original_path
-                })),
-                job_name: inputs.jobName,
-                job_matrix: inputs.jobMatrix,
-                repository_name: inputs.repositoryName,
-                run_attempt: inputs.runAttempt,
-                run_id: inputs.runId
+                }))
             }, {
                 captainBaseUrl: inputs.captainBaseUrl,
                 captainToken: inputs.captainToken
@@ -242,35 +315,42 @@ function run() {
                     .join(', ')}`);
             }
             const uploadResponses = yield Promise.all(uploadEach(bulkArtifactsResult.value, artifactsWithFiles));
-            const uploadedExternalIds = uploadResponses
+            const uploadedTestResultUploads = uploadResponses
                 .filter(([, response]) => response.ok)
-                .map(([artifact]) => artifact.external_id);
-            const failedArtifacts = uploadResponses
+                .map(([testResultUpload]) => testResultUpload);
+            const failedTestResultUploads = uploadResponses
                 .filter(([, response]) => !response.ok)
-                .map(([artifact]) => artifact);
+                .map(([testResultUpload]) => testResultUpload);
+            const testResultUploadsWithoutFiles = artifactsWithoutFiles.map(artifact => uploadResponses.find(([testResultUpload]) => {
+                testResultUpload.external_identifier === artifact.external_id;
+            })[0]);
             // intentionally ignore any potential errors here- if it fails,
             // our server will eventually find out the files were uploaded
-            yield (0, captain_1.updateBulkArtifactsStatus)([
-                uploadedExternalIds.map(externalId => ({
-                    external_id: externalId,
+            yield (0, captain_1.updateBulkTestResults)([
+                uploadedTestResultUploads.map(testResultsUpload => ({
+                    id: testResultsUpload.id,
                     status: 'uploaded'
                 })),
-                failedArtifacts.map(artifact => ({
-                    external_id: artifact.external_id,
+                failedTestResultUploads.map(testResultsUpload => ({
+                    id: testResultsUpload.id,
                     status: 'upload_failed'
                 })),
-                artifactsWithoutFiles.map(artifact => ({
-                    external_id: artifact.external_id,
+                testResultUploadsWithoutFiles.map(testResultsUpload => ({
+                    id: testResultsUpload.id,
                     status: 'upload_skipped_file_missing'
                 }))
             ].flat(), {
                 captainBaseUrl: inputs.captainBaseUrl,
                 captainToken: inputs.captainToken
             });
-            if (failedArtifacts.length) {
-                throw new Error(`Some artifacts could not be uploaded:\n\n  Artifacts: ${failedArtifacts
-                    .map(artifact => artifact.name)
-                    .join(', ')}`);
+            if (failedTestResultUploads.length) {
+                const failedArtifactNames = failedTestResultUploads
+                    .map(testResultUpload => {
+                    const artifact = artifacts.find(artifact => artifact.external_id === testResultUpload.external_identifier);
+                    return artifact.name;
+                })
+                    .join(', ');
+                throw new Error(`Some artifacts could not be uploaded:\n\n  Artifacts: ${failedArtifactNames}`);
             }
         }
         catch (error) {
@@ -283,15 +363,15 @@ function run() {
 exports["default"] = run;
 function uploadEach(bulkArtifacts, artifactsWithFiles) {
     return artifactsWithFiles.map((artifact) => __awaiter(this, void 0, void 0, function* () {
-        const bulkArtifact = bulkArtifacts.find(ba => ba.external_id === artifact.external_id);
-        if (!bulkArtifact) {
+        const testResultUpload = bulkArtifacts.find(ba => ba.external_identifier === artifact.external_id);
+        if (!testResultUpload) {
             throw new Error('Unreachable (could not find bulk artifact with matching external ID)');
         }
-        const response = yield (0, node_fetch_1.default)(bulkArtifact.upload_url, {
+        const response = yield (0, node_fetch_1.default)(testResultUpload.upload_url, {
             body: (0, fs_1.readFileSync)(artifact.path),
             method: 'PUT'
         });
-        return [artifact, response];
+        return [testResultUpload, response];
     }));
 }
 
@@ -356,6 +436,20 @@ function runAttempt() {
     }
     return parseInt(githubRunAttempt);
 }
+function branchName() {
+    const branchName = process.env.GITHUB_HEAD_REF || process.env.GITHUB_REF_NAME;
+    if (!branchName) {
+        throw new Error('process.env.GITHUB_HEAD_REF adn process.env.GITHUB_REF_NAME undefined');
+    }
+    return branchName;
+}
+function commitSha() {
+    const commitSha = process.env.GITHUB_SHA;
+    if (!commitSha) {
+        throw new Error('process.env.GITHUB_SHA was undefined');
+    }
+    return commitSha;
+}
 function getInputs() {
     const matrix = core.getInput('job-matrix');
     const errors = [];
@@ -387,6 +481,8 @@ function getInputs() {
             runId: github.context.runId.toString(),
             runAttempt: runAttempt(),
             captainBaseUrl: core.getInput('captain-base-url'),
+            branchName: branchName(),
+            commitSha: commitSha(),
             artifacts,
             captainToken
         };

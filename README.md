@@ -67,6 +67,11 @@ Once you have your test framework configured to write its test results to a file
     # If you provided a name, set that same value here.
     job-name: ''
 
+    # This is required if you are running the action as part of a matrix build.
+    # Without it, we won't be able to find the job to associate your artifacts.
+    # If you're not sure, you can always safely set this even if you aren't using a matrix.
+    job-matrix: '${{ toJSON(matrix) }}'
+
     # Optional.
     # The behavior of the action when an artifact's file is not found.
     #

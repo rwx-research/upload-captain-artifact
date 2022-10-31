@@ -15,6 +15,7 @@ Here's the documentation for how to configure reporters in several of the most p
 We're working on building support for additional frameworks.
 If you'd like us to prioritize any one in particular, please [let us know](https://www.rwx.com/support).
 
+- [Cypress](https://github.com/captain-examples/cypress)
 - [Jest](https://github.com/captain-examples/jest)
 - [JUnit with Maven](https://github.com/captain-examples/junit5)
 - [pytest](https://github.com/captain-examples/pytest)

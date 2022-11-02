@@ -11,7 +11,9 @@ export type GitHubJobTags = {
   github_repository_name: string
   github_run_id: string
   github_run_attempt: string
-  github_job_matrix?: {[key: string]: string}
+  github_job_matrix?: {
+    [key: string]: string | number | boolean | null | undefined
+  }
   github_job_name: string
 }
 

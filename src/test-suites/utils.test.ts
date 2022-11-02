@@ -99,10 +99,10 @@ describe('Test Suites', () => {
             repositoryName: 'upload-captain-artifact',
             runAttempt: '4',
             runId: '1244592',
-            testResultFileInputs: [
+            testResults: [
               {
-                name: 'Some Name',
-                path: 'some_path.json',
+                testSuiteIdentifier: 'Some Name',
+                originalPath: 'some_path.json',
                 format: 'rspec_json'
               }
             ]
@@ -156,10 +156,10 @@ describe('Test Suites', () => {
             repositoryName: 'upload-captain-artifact',
             runAttempt: '4',
             runId: '1244592',
-            testResultFileInputs: [
+            testResults: [
               {
-                name: 'Some Name',
-                path: 'some_path.json',
+                testSuiteIdentifier: 'Some Name',
+                originalPath: 'some_path.json',
                 format: 'rspec_json'
               }
             ]
@@ -202,10 +202,10 @@ describe('Test Suites', () => {
             repositoryName: 'upload-captain-artifact',
             runAttempt: '4',
             runId: '1244592',
-            testResultFileInputs: [
+            testResults: [
               {
-                name: 'Some Name',
-                path: 'some_path.json',
+                testSuiteIdentifier: 'Some Name',
+                originalPath: 'some_path.json',
                 format: 'rspec_json'
               }
             ]
@@ -248,10 +248,10 @@ describe('Test Suites', () => {
             repositoryName: 'upload-captain-artifact',
             runAttempt: '4',
             runId: '1244592',
-            testResultFileInputs: [
+            testResults: [
               {
-                name: 'Some Name',
-                path: 'some_path.json',
+                testSuiteIdentifier: 'Some Name',
+                originalPath: 'some_path.json',
                 format: 'rspec_json'
               }
             ]

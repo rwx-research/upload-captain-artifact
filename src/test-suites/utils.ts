@@ -9,9 +9,9 @@ export type ArtifactInput = {
   parser: string
 }
 
-export type TestResultFileInput = {
-  name: string
-  path: string
+export type TestResult = {
+  testSuiteIdentifier: string
+  originalPath: string
   format: string
 }
 
@@ -31,7 +31,7 @@ export type Inputs = {
   repositoryName: string
   runAttempt: string
   runId: string
-  testResultFileInputs: TestResultFileInput[]
+  testResults: TestResult[]
 }
 
 function parseIfFilesNotFound(input: string): IfFilesNotFound {
@@ -146,10 +146,10 @@ export function getInputs(): ValidatedInputs {
       repositoryName: expectEnvironment('GITHUB_REPOSITORY').split('/')[1],
       runAttempt: expectEnvironment('GITHUB_RUN_ATTEMPT'),
       runId: expectEnvironment('GITHUB_RUN_ID'),
-      testResultFileInputs: artifacts.map(({name, path, parser}) => ({
+      testResults: artifacts.map(({name, path, parser}) => ({
         format: parser,
-        name,
-        path
+        testSuiteIdentifier: name,
+        originalPath: path
       }))
     }
   }

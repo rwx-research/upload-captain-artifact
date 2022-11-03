@@ -114,7 +114,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const run_1 = __importDefault(__nccwpck_require__(7884));
+const run_2 = __importDefault(__nccwpck_require__(8332));
 (0, run_1.default)();
+(0, run_2.default)();
 
 
 /***/ }),
@@ -294,6 +296,417 @@ function uploadEach(bulkArtifacts, artifactsWithFiles) {
         return [artifact, response];
     }));
 }
+
+
+/***/ }),
+
+/***/ 5198:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+"use strict";
+
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.updateBulkTestResults = exports.createBulkTestResults = void 0;
+const node_fetch_1 = __importDefault(__nccwpck_require__(4429));
+const genericCreateError = [
+    {
+        error: 'unexpected_error',
+        message: 'An unexpected error occurred while creating bulk test results'
+    }
+];
+const genericUpdateError = [
+    {
+        error: 'unexpected_error',
+        message: 'An unexpected error occurred while updating bulk test results'
+    }
+];
+function createBulkTestResults(input, config) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const response = yield (0, node_fetch_1.default)(`${config.captainBaseUrl}/api/test_suites/bulk_test_results`, {
+            body: JSON.stringify(Object.assign(Object.assign({}, input), { provider: 'github' })),
+            method: 'POST',
+            headers: {
+                Authorization: `Bearer ${config.captainToken}`,
+                'Content-Type': 'application/json'
+            }
+        });
+        if (response.ok) {
+            return {
+                ok: true,
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                value: (yield response.json()).test_results_uploads
+            };
+        }
+        else {
+            return {
+                ok: false,
+                error: genericCreateError
+            };
+        }
+    });
+}
+exports.createBulkTestResults = createBulkTestResults;
+function updateBulkTestResults(input, config) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const response = yield (0, node_fetch_1.default)(`${config.captainBaseUrl}/api/test_suites/bulk_test_results`, {
+            body: JSON.stringify(input),
+            method: 'PUT',
+            headers: {
+                Authorization: `Bearer ${config.captainToken}`,
+                'Content-Type': 'application/json'
+            }
+        });
+        if (response.ok) {
+            return { ok: true, value: undefined };
+        }
+        else {
+            try {
+                const errors = (yield response.json());
+                return {
+                    ok: false,
+                    error: errors.length ? errors : genericUpdateError
+                };
+            }
+            catch (_a) {
+                return {
+                    ok: false,
+                    error: genericUpdateError
+                };
+            }
+        }
+    });
+}
+exports.updateBulkTestResults = updateBulkTestResults;
+
+
+/***/ }),
+
+/***/ 8332:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+"use strict";
+
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+const core = __importStar(__nccwpck_require__(2186));
+const node_fetch_1 = __importDefault(__nccwpck_require__(4429));
+const fs_1 = __nccwpck_require__(7147);
+const fastGlob = __importStar(__nccwpck_require__(3664));
+const uuid_1 = __nccwpck_require__(5840);
+const captain_1 = __nccwpck_require__(5198);
+const utils_1 = __nccwpck_require__(412);
+function run() {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            const validatedInputs = (0, utils_1.getInputs)();
+            if (validatedInputs.errors) {
+                const errors = validatedInputs.errors;
+                for (const error of errors) {
+                    core.warning(error);
+                }
+                core.warning([
+                    "Captain Uploader Action is misconfigured and can't upload test results.",
+                    'Please address error(s) above in the GitHub workflow and try again.',
+                    'These warnings will be errors in version 2'
+                ].join('\n'));
+                return;
+            }
+            const inputs = validatedInputs;
+            const testResultsByTestSuiteIdentifier = inputs.testResults.reduce((byIdentifier, testResult) => (Object.assign(Object.assign({}, byIdentifier), { [testResult.testSuiteIdentifier]: [
+                    ...(byIdentifier[testResult.testSuiteIdentifier] || []),
+                    testResult
+                ] })), {});
+            for (const [testSuiteIdentifier, testResults] of Object.entries(testResultsByTestSuiteIdentifier)) {
+                const expandedTestResults = testResults.flatMap(testResult => {
+                    const expandedGlob = fastGlob.sync(testResult.originalPath);
+                    if (expandedGlob.length > 0) {
+                        return expandedGlob.map(path => (Object.assign(Object.assign({}, testResult), { expandedPath: path, externalIdentifier: (0, uuid_1.v4)() })));
+                    }
+                    else {
+                        return [
+                            Object.assign(Object.assign({}, testResult), { expandedPath: testResult.originalPath, externalIdentifier: (0, uuid_1.v4)() })
+                        ];
+                    }
+                });
+                const [testResultsWithFiles, testResultsWithoutFiles] = expandedTestResults.reduce(([withFiles, withoutFiles], artifact) => {
+                    if ((0, fs_1.existsSync)(artifact.expandedPath)) {
+                        return [[...withFiles, artifact], withoutFiles];
+                    }
+                    else {
+                        return [withFiles, [...withoutFiles, artifact]];
+                    }
+                }, [[], []]);
+                if (inputs.ifFilesNotFound === 'warn') {
+                    for (const artifact of testResultsWithoutFiles) {
+                        core.warning(`Test results file not found at '${artifact.expandedPath}' for test suite '${artifact.testSuiteIdentifier}'`);
+                    }
+                }
+                else if (inputs.ifFilesNotFound === 'error') {
+                    for (const artifact of testResultsWithoutFiles) {
+                        core.error(`Test results file not found at '${artifact.expandedPath}' for test suite '${artifact.testSuiteIdentifier}'`);
+                    }
+                    if (testResultsWithoutFiles.length) {
+                        core.setFailed('Test result(s) are missing file(s)');
+                    }
+                }
+                const bulkTestResultsResult = yield (0, captain_1.createBulkTestResults)({
+                    attempted_by: inputs.attemptedBy,
+                    branch: inputs.branch,
+                    commit_message: inputs.commitMessage,
+                    commit_sha: inputs.commitSha,
+                    job_tags: {
+                        github_account_owner: inputs.accountOwner,
+                        github_repository_name: inputs.repositoryName,
+                        github_run_id: inputs.runId,
+                        github_run_attempt: inputs.runAttempt,
+                        github_job_matrix: inputs.jobMatrix,
+                        github_job_name: inputs.jobName
+                    },
+                    test_results_files: expandedTestResults.map(testResult => ({
+                        external_identifier: testResult.externalIdentifier,
+                        format: testResult.format,
+                        original_path: testResult.originalPath
+                    })),
+                    test_suite_identifier: testSuiteIdentifier
+                }, {
+                    captainBaseUrl: inputs.captainBaseUrl,
+                    captainToken: inputs.captainToken
+                });
+                if (!bulkTestResultsResult.ok) {
+                    throw new Error(`Bulk test results POST failed:\n\n  - Errors: ${bulkTestResultsResult.error
+                        .map(error => error.message)
+                        .join(', ')}`);
+                }
+                const uploadResponses = yield Promise.all(uploadEach(bulkTestResultsResult.value, testResultsWithFiles));
+                const uploaded = uploadResponses.filter(([, , response]) => response && response.ok);
+                const failed = uploadResponses.filter(([, , response]) => response && !response.ok);
+                const missing = uploadResponses.filter(([, , response]) => !response);
+                // intentionally ignore any potential errors here- if it fails,
+                // our server will eventually find out the files were uploaded
+                yield (0, captain_1.updateBulkTestResults)({
+                    test_suite_identifier: testSuiteIdentifier,
+                    test_results_files: [
+                        uploaded.map(([testResultsUpload]) => ({
+                            id: testResultsUpload.id,
+                            upload_status: 'uploaded'
+                        })),
+                        failed.map(([testResultsUpload]) => ({
+                            id: testResultsUpload.id,
+                            upload_status: 'upload_failed'
+                        })),
+                        missing.map(([testResultsUpload]) => ({
+                            id: testResultsUpload.id,
+                            upload_status: 'upload_skipped_file_missing'
+                        }))
+                    ].flat()
+                }, {
+                    captainBaseUrl: inputs.captainBaseUrl,
+                    captainToken: inputs.captainToken
+                });
+                if (failed.length) {
+                    throw new Error(`Some test results could not be uploaded:\n\n  Test results:\n${failed
+                        .map(([, testResult]) => `  - Suite: ${testResult === null || testResult === void 0 ? void 0 : testResult.testSuiteIdentifier}, Path: ${testResult === null || testResult === void 0 ? void 0 : testResult.originalPath}`)
+                        .join('\n')}`);
+                }
+            }
+        }
+        catch (error) {
+            if (error instanceof Error) {
+                core.setFailed(error.message);
+            }
+        }
+    });
+}
+exports["default"] = run;
+function uploadEach(testResultsUploads, testResultsWithFiles) {
+    return testResultsUploads.map((testResultsUpload) => __awaiter(this, void 0, void 0, function* () {
+        const testResult = testResultsWithFiles.find(r => testResultsUpload.external_identifier === r.externalIdentifier);
+        if (!testResult) {
+            return [testResultsUpload, undefined, undefined];
+        }
+        const response = yield (0, node_fetch_1.default)(testResultsUpload.upload_url, {
+            body: (0, fs_1.readFileSync)(testResult.expandedPath),
+            method: 'PUT'
+        });
+        return [testResultsUpload, testResult, response];
+    }));
+}
+
+
+/***/ }),
+
+/***/ 412:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+"use strict";
+
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.getInputs = void 0;
+const core = __importStar(__nccwpck_require__(2186));
+const fs_1 = __nccwpck_require__(7147);
+function parseIfFilesNotFound(input) {
+    if (input === 'ignore' || input === 'warn' || input === 'error') {
+        return input;
+    }
+    else {
+        throw new Error(`Unexpected value ${input} for 'if-files-not-found'. Acceptable values are 'ignore', 'warn', and 'error'`);
+    }
+}
+function expectEnvironment(variable) {
+    const value = process.env[variable];
+    if (value) {
+        return value;
+    }
+    throw new Error(`process.env.${variable} was not defined`);
+}
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function eventPayload() {
+    if (process.env.GITHUB_EVENT_PATH &&
+        (0, fs_1.existsSync)(process.env.GITHUB_EVENT_PATH)) {
+        return JSON.parse((0, fs_1.readFileSync)(process.env.GITHUB_EVENT_PATH, { encoding: 'utf8' }));
+    }
+}
+function attemptedBy() {
+    const triggeringActor = process.env.GITHUB_TRIGGERING_ACTOR;
+    const actor = process.env.GITHUB_ACTOR;
+    if (triggeringActor) {
+        return triggeringActor;
+    }
+    if (actor) {
+        return actor;
+    }
+    throw new Error('process.env.GITHUB_TRIGGERING_ACTOR and process.env.GITHUB_ACTOR was undefined');
+}
+function branch() {
+    var _a, _b, _c;
+    const pullRequestBranch = (_c = (_b = (_a = eventPayload()) === null || _a === void 0 ? void 0 : _a.pull_request) === null || _b === void 0 ? void 0 : _b.head) === null || _c === void 0 ? void 0 : _c.ref;
+    if (pullRequestBranch) {
+        return pullRequestBranch;
+    }
+    return expectEnvironment('GITHUB_REF_NAME');
+}
+function commitMessage() {
+    var _a, _b;
+    const pushCommitMessage = (_b = (_a = eventPayload()) === null || _a === void 0 ? void 0 : _a.head_commit) === null || _b === void 0 ? void 0 : _b.message;
+    if (pushCommitMessage) {
+        return pushCommitMessage;
+    }
+    return undefined;
+}
+function getInputs() {
+    const matrix = core.getInput('job-matrix');
+    const errors = [];
+    let artifacts;
+    try {
+        artifacts = JSON.parse(core.getInput('artifacts'));
+        if (artifacts.length === 0) {
+            errors.push('You must include at least one artifact in the `artifacts` field.');
+        }
+    }
+    catch (e) {
+        errors.push("`artifacts` field isn't valid JSON.");
+        artifacts = [];
+    }
+    const captainToken = core.getInput('captain-token');
+    if (!captainToken || captainToken.trim().length === 0) {
+        errors.push("`captain-token` field can't be empty.");
+    }
+    if (errors.length !== 0) {
+        return { errors };
+    }
+    else {
+        return {
+            accountOwner: expectEnvironment('GITHUB_REPOSITORY').split('/')[0],
+            attemptedBy: attemptedBy(),
+            branch: branch(),
+            captainBaseUrl: core.getInput('captain-base-url'),
+            captainToken,
+            commitMessage: commitMessage(),
+            commitSha: expectEnvironment('GITHUB_SHA'),
+            ifFilesNotFound: parseIfFilesNotFound(core.getInput('if-files-not-found')),
+            jobMatrix: matrix ? JSON.parse(matrix) : undefined,
+            jobName: core.getInput('job-name') || expectEnvironment('GITHUB_JOB'),
+            repositoryName: expectEnvironment('GITHUB_REPOSITORY').split('/')[1],
+            runAttempt: expectEnvironment('GITHUB_RUN_ATTEMPT'),
+            runId: expectEnvironment('GITHUB_RUN_ID'),
+            testResults: artifacts.map(({ name, path, parser }) => ({
+                format: parser,
+                testSuiteIdentifier: name,
+                originalPath: path
+            }))
+        };
+    }
+}
+exports.getInputs = getInputs;
 
 
 /***/ }),

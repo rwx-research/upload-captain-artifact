@@ -1,5 +1,5 @@
 #!/bin/bash
-set -Eeuo pipefail
+set -Euo pipefail
 
 # 0. Check that there's no changes and that we're on the v1 branch
 if [ -n "$(git status --porcelain)" ]; then

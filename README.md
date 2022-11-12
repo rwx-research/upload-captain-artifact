@@ -2,11 +2,12 @@
 
 This action uploads test results to [Captain](https://captain.build/).
 
-Captain is a build and test suite performance management platform.
+Captain provides observability and tooling compatible with your existing CI platform and testing frameworks.
+Use it for faster and more reliable builds, and happier and more productive engineers.
 
-You'll need an [API Token](https://account.rwx.com/deep_link/manage/access_tokens) to use this Action. Set it as a secret
-in your repo. Conventionally, we call this secret `CAPTAIN_TOKEN`. More documentation on api
-tokens [here](https://www.rwx.com/captain/docs/api-tokens).
+You'll need an [Access Token](https://account.rwx.com/deep_link/manage/access_tokens) to use this Action. Set it as a secret
+in your repo. Conventionally, we call this secret `RWX_ACCESS_TOKEN`. More documentation on access
+tokens [here](https://www.rwx.com/docs/access-tokens).
 
 ## Configure Test Framework
 
@@ -61,8 +62,8 @@ Once you have your test framework configured to write its test results to a file
       ]
 
     # Required.
-    # https://www.rwx.com/captain/docs/api-tokens
-    captain-token: '${{ secrets.CAPTAIN_TOKEN }}'
+    # https://www.rwx.com/docs/access-tokens
+    captain-token: '${{ secrets.RWX_ACCESS_TOKEN }}'
 
     # This is required if you set the `name` property on your job.
     # If you provided a name, set that same value here.
@@ -100,5 +101,5 @@ Once you have your test framework configured to write its test results to a file
           "parser": "rspec_json"
         }
       ]
-    captain-token: '${{ secrets.CAPTAIN_TOKEN }}'
+    captain-token: '${{ secrets.RWX_ACCESS_TOKEN }}'
 ```

@@ -1,5 +1,11 @@
 # Upload Captain Artifact
 
+⚠️  This Action is deprecated. ⚠️
+
+See the latest documentation at https://www.rwx.com/captain/docs/test-suite-integration
+
+## Deprecated Documentation
+
 This action uploads test results to [Captain](https://captain.build/).
 
 Captain provides observability and tooling compatible with your existing CI platform and testing frameworks.

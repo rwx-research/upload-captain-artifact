@@ -34,7 +34,8 @@ jobs:
               }
             ]
           job-matrix: "${{ toJSON(matrix) }}"
-          captain-token: "${{ secrets.VANGUARD_PRODUCTION_RWX_TOKEN }}"
+          captain-token: "${{ secrets.RWX_ACCESS_TOKEN }}"
+          if-files-not-found: error
       - name: Upload artifacts to captain staging
         uses: ./
         with:
@@ -48,5 +49,6 @@ jobs:
               }
             ]
           job-matrix: "${{ toJSON(matrix) }}"
-          captain-token: "${{ secrets.VANGUARD_STAGING_RWX_TOKEN }}"
+          captain-token: "${{ secrets.RWX_ACCESS_TOKEN_STAGING }}"
           captain-base-url: "${{ secrets.VANGUARD_STAGING_BASE_URL }}"
+          if-files-not-found: error

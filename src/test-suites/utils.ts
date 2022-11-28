@@ -1,6 +1,4 @@
 import * as core from '@actions/core'
-import {GitHubJobTags} from './api/captain'
-import {existsSync, readFileSync} from 'fs'
 
 export type ArtifactInput = {
   kind: string
@@ -18,19 +16,13 @@ export type TestResult = {
 export type IfFilesNotFound = 'ignore' | 'warn' | 'error'
 
 export type Inputs = {
-  accountOwner: string
-  attemptedBy: string
-  branch: string
   captainBaseUrl: string
   captainToken: string
-  commitMessage?: string
-  commitSha: string
   ifFilesNotFound: IfFilesNotFound
-  jobMatrix?: GitHubJobTags['github_job_matrix']
+  jobMatrix?: {
+    [key: string]: string | number | boolean | null | undefined
+  }
   jobName: string
-  repositoryName: string
-  runAttempt: string
-  runId: string
   testResults: TestResult[]
 }
 
@@ -52,52 +44,6 @@ function expectEnvironment(variable: string): string {
   }
 
   throw new Error(`process.env.${variable} was not defined`)
-}
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function eventPayload(): any {
-  if (
-    process.env.GITHUB_EVENT_PATH &&
-    existsSync(process.env.GITHUB_EVENT_PATH)
-  ) {
-    return JSON.parse(
-      readFileSync(process.env.GITHUB_EVENT_PATH, {encoding: 'utf8'})
-    )
-  }
-}
-
-function attemptedBy(): string {
-  const triggeringActor = process.env.GITHUB_TRIGGERING_ACTOR
-  const actor = process.env.GITHUB_ACTOR
-
-  if (triggeringActor) {
-    return triggeringActor
-  }
-  if (actor) {
-    return actor
-  }
-
-  throw new Error(
-    'process.env.GITHUB_TRIGGERING_ACTOR and process.env.GITHUB_ACTOR was undefined'
-  )
-}
-
-function branch(): string {
-  const pullRequestBranch = eventPayload()?.pull_request?.head?.ref
-  if (pullRequestBranch) {
-    return pullRequestBranch
-  }
-
-  return expectEnvironment('GITHUB_REF_NAME')
-}
-
-function commitMessage(): string | undefined {
-  const pushCommitMessage = eventPayload()?.head_commit?.message
-  if (pushCommitMessage) {
-    return pushCommitMessage
-  }
-
-  return undefined
 }
 
 export type Valid = Inputs
@@ -131,21 +77,13 @@ export function getInputs(): ValidatedInputs {
     return {errors}
   } else {
     return {
-      accountOwner: expectEnvironment('GITHUB_REPOSITORY').split('/')[0],
-      attemptedBy: attemptedBy(),
-      branch: branch(),
       captainBaseUrl: core.getInput('captain-base-url'),
       captainToken,
-      commitMessage: commitMessage(),
-      commitSha: expectEnvironment('GITHUB_SHA'),
       ifFilesNotFound: parseIfFilesNotFound(
         core.getInput('if-files-not-found')
       ),
       jobMatrix: matrix ? JSON.parse(matrix) : undefined,
       jobName: core.getInput('job-name') || expectEnvironment('GITHUB_JOB'),
-      repositoryName: expectEnvironment('GITHUB_REPOSITORY').split('/')[1],
-      runAttempt: expectEnvironment('GITHUB_RUN_ATTEMPT'),
-      runId: expectEnvironment('GITHUB_RUN_ID'),
       testResults: artifacts.map(({name, path, parser}) => ({
         format: parser,
         testSuiteIdentifier: name,

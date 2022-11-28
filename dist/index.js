@@ -208,8 +208,6 @@ function run() {
                 ...(byIdentifier[testResult.testSuiteIdentifier] || []),
                 testResult
             ] })), {});
-        core.exportVariable('RWX_ACCESS_TOKEN', inputs.captainToken);
-        core.exportVariable('CAPTAIN_HOST', new URL(inputs.captainBaseUrl).host);
         for (const [testSuiteIdentifier, testResults] of Object.entries(testResultsByTestSuiteIdentifier)) {
             const args = [
                 '--suite-id',
@@ -222,7 +220,9 @@ function run() {
             }
             args.push(...testResults.map(({ originalPath }) => originalPath));
             // TODO(kkt): fail-on-upload-error / ifFilesNotFound
-            yield exec.exec('captain upload results', args);
+            yield exec.exec('captain upload results', args, {
+                env: Object.assign(Object.assign({}, process.env), { RWX_ACCESS_TOKEN: inputs.captainToken, CAPTAIN_HOST: new URL(inputs.captainBaseUrl).host })
+            });
         }
     });
 }

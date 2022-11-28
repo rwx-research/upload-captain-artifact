@@ -45,24 +45,42 @@ describe('run', () => {
 
     await run()
 
-    expect(mockExec).toBeCalledWith('captain upload results', [
-      '--suite-id',
-      'artifact-json',
-      '--github-job-name',
-      'some-job-name',
-      '--github-job-matrix',
-      '{"some":"value","other":"values"}',
-      './fixtures/json-artifact.json'
-    ])
-    expect(mockExec).toBeCalledWith('captain upload results', [
-      '--suite-id',
-      'artifact-xml',
-      '--github-job-name',
-      'some-job-name',
-      '--github-job-matrix',
-      '{"some":"value","other":"values"}',
-      './fixtures/xml-artifact.xml'
-    ])
+    expect(mockExec).toBeCalledWith(
+      'captain upload results',
+      [
+        '--suite-id',
+        'artifact-json',
+        '--github-job-name',
+        'some-job-name',
+        '--github-job-matrix',
+        '{"some":"value","other":"values"}',
+        './fixtures/json-artifact.json'
+      ],
+      expect.objectContaining({
+        env: expect.objectContaining({
+          RWX_ACCESS_TOKEN: 'fake-token',
+          CAPTAIN_HOST: 'captain.example.com'
+        })
+      })
+    )
+    expect(mockExec).toBeCalledWith(
+      'captain upload results',
+      [
+        '--suite-id',
+        'artifact-xml',
+        '--github-job-name',
+        'some-job-name',
+        '--github-job-matrix',
+        '{"some":"value","other":"values"}',
+        './fixtures/xml-artifact.xml'
+      ],
+      expect.objectContaining({
+        env: expect.objectContaining({
+          RWX_ACCESS_TOKEN: 'fake-token',
+          CAPTAIN_HOST: 'captain.example.com'
+        })
+      })
+    )
     expect(mockSetFailed).toBeCalledTimes(0)
   })
 
@@ -90,16 +108,25 @@ describe('run', () => {
 
     await run()
 
-    expect(mockExec).toBeCalledWith('captain upload results', [
-      '--suite-id',
-      'test-suite',
-      '--github-job-name',
-      'some-job-name',
-      '--github-job-matrix',
-      '{"some":"value","other":"values"}',
-      './fixtures/json-artifact.json',
-      './fixtures/xml-artifact.xml'
-    ])
+    expect(mockExec).toBeCalledWith(
+      'captain upload results',
+      [
+        '--suite-id',
+        'test-suite',
+        '--github-job-name',
+        'some-job-name',
+        '--github-job-matrix',
+        '{"some":"value","other":"values"}',
+        './fixtures/json-artifact.json',
+        './fixtures/xml-artifact.xml'
+      ],
+      expect.objectContaining({
+        env: expect.objectContaining({
+          RWX_ACCESS_TOKEN: 'fake-token',
+          CAPTAIN_HOST: 'captain.example.com'
+        })
+      })
+    )
     expect(mockSetFailed).toBeCalledTimes(0)
   })
 })

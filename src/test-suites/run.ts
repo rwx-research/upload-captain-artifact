@@ -33,9 +33,6 @@ export default async function run(): Promise<void> {
       {} as {[key: string]: TestResult[]}
     )
 
-  core.exportVariable('RWX_ACCESS_TOKEN', inputs.captainToken)
-  core.exportVariable('CAPTAIN_HOST', new URL(inputs.captainBaseUrl).host)
-
   for (const [testSuiteIdentifier, testResults] of Object.entries(
     testResultsByTestSuiteIdentifier
   )) {
@@ -53,6 +50,12 @@ export default async function run(): Promise<void> {
     args.push(...testResults.map(({originalPath}) => originalPath))
 
     // TODO(kkt): fail-on-upload-error / ifFilesNotFound
-    await exec.exec('captain upload results', args)
+    await exec.exec('captain upload results', args, {
+      env: {
+        ...process.env,
+        RWX_ACCESS_TOKEN: inputs.captainToken,
+        CAPTAIN_HOST: new URL(inputs.captainBaseUrl).host
+      }
+    })
   }
 }

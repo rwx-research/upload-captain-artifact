@@ -28,15 +28,14 @@ async function fetchVersionLookup(): Promise<Map<string, string>> {
 }
 
 export default async function setupCaptain(): Promise<void> {
-  let version = core.getInput('version')
-  if (version === 'latest' || version === 'v1') {
-    const versions = await fetchVersionLookup()
-    if (!versions.has(version)) {
-      throw new Error(`Unknown version ${version}`)
-    }
+  let version = 'v1'
 
-    version = versions.get(version) as string
+  const versions = await fetchVersionLookup()
+  if (!versions.has(version)) {
+    throw new Error(`Unknown version ${version}`)
   }
+
+  version = versions.get(version) as string
 
   let os = process.platform as string
   if (os === 'win32') {

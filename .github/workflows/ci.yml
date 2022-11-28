@@ -35,7 +35,6 @@ jobs:
             ]
           job-matrix: '${{ toJSON(matrix) }}'
           captain-token: '${{ secrets.RWX_ACCESS_TOKEN }}'
-          if-files-not-found: warn
       - name: Upload artifacts to captain staging
         uses: ./
         with:

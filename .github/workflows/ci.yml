@@ -4,6 +4,9 @@ on:
 
 jobs:
   test-and-lint:
+    strategy:
+      matrix:
+        job: [0, 1]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3

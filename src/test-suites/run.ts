@@ -49,7 +49,6 @@ export default async function run(): Promise<void> {
 
     args.push(...testResults.map(({originalPath}) => originalPath))
 
-    // TODO(kkt): fail-on-upload-error / ifFilesNotFound
     await exec.exec('captain upload results', args, {
       env: {
         ...process.env,

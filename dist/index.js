@@ -219,7 +219,6 @@ function run() {
                 args.push('--github-job-matrix', JSON.stringify(inputs.jobMatrix));
             }
             args.push(...testResults.map(({ originalPath }) => originalPath));
-            // TODO(kkt): fail-on-upload-error / ifFilesNotFound
             yield exec.exec('captain upload results', args, {
                 env: Object.assign(Object.assign({}, process.env), { RWX_ACCESS_TOKEN: inputs.captainToken, CAPTAIN_HOST: new URL(inputs.captainBaseUrl).host })
             });
@@ -262,14 +261,6 @@ var __importStar = (this && this.__importStar) || function (mod) {
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.getInputs = void 0;
 const core = __importStar(__nccwpck_require__(2186));
-function parseIfFilesNotFound(input) {
-    if (input === 'ignore' || input === 'warn' || input === 'error') {
-        return input;
-    }
-    else {
-        throw new Error(`Unexpected value ${input} for 'if-files-not-found'. Acceptable values are 'ignore', 'warn', and 'error'`);
-    }
-}
 function expectEnvironment(variable) {
     const value = process.env[variable];
     if (value) {
@@ -302,7 +293,6 @@ function getInputs() {
         return {
             captainBaseUrl: core.getInput('captain-base-url'),
             captainToken,
-            ifFilesNotFound: parseIfFilesNotFound(core.getInput('if-files-not-found')),
             jobMatrix: matrix ? JSON.parse(matrix) : undefined,
             jobName: core.getInput('job-name') || expectEnvironment('GITHUB_JOB'),
             testResults: artifacts.map(({ name, path, parser }) => ({

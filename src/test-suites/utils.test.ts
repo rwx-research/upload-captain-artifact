@@ -29,8 +29,6 @@ describe('Test Suites', () => {
         ;(core.getInput as jest.Mock<any>).mockImplementation(input => {
           if (input === 'artifacts') {
             return '[{"kind": "test_results", "name": "Some Name", "path": "some_path.json", "parser": "rspec_json"}]'
-          } else if (input === 'if-files-not-found') {
-            return 'warn'
           } else if (input === 'job-matrix') {
             return '{"foo": 1, "bar": 2}'
           } else if (input === 'job-name') {
@@ -47,7 +45,6 @@ describe('Test Suites', () => {
         expect(getInputs()).toEqual({
           captainBaseUrl: 'https://captain.example.com',
           captainToken: 'fake-token',
-          ifFilesNotFound: 'warn',
           jobMatrix: {foo: 1, bar: 2},
           jobName: 'Some Job Name',
           testResults: [
@@ -66,8 +63,6 @@ describe('Test Suites', () => {
           ;(core.getInput as jest.Mock<any>).mockImplementation(input => {
             if (input === 'artifacts') {
               return '[{"kind": "test_results", "name": "Some Name", "path": "some_path.json", "parser": "rspec_json"}]'
-            } else if (input === 'if-files-not-found') {
-              return 'warn'
             } else if (input === 'job-matrix') {
               return ''
             } else if (input === 'job-name') {
@@ -84,7 +79,6 @@ describe('Test Suites', () => {
           expect(getInputs()).toEqual({
             captainBaseUrl: 'https://captain.example.com',
             captainToken: 'fake-token',
-            ifFilesNotFound: 'warn',
             jobMatrix: undefined,
             jobName: 'Some Job Name',
             testResults: [
@@ -104,8 +98,6 @@ describe('Test Suites', () => {
           ;(core.getInput as jest.Mock<any>).mockImplementation(input => {
             if (input === 'artifacts') {
               return '[{"kind": "test_results", "name": "Some Name", "path": "some_path.json", "parser": "rspec_json"}]'
-            } else if (input === 'if-files-not-found') {
-              return 'warn'
             } else if (input === 'job-matrix') {
               return '{"foo": 1, "bar": 2}'
             } else if (input === 'job-name') {
@@ -122,7 +114,6 @@ describe('Test Suites', () => {
           expect(getInputs()).toEqual({
             captainBaseUrl: 'https://captain.example.com',
             captainToken: 'fake-token',
-            ifFilesNotFound: 'warn',
             jobMatrix: {foo: 1, bar: 2},
             jobName: 'some-job',
             testResults: [

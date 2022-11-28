@@ -79,15 +79,6 @@ Once you have your test framework configured to write its test results to a file
     # Without it, we won't be able to find the job to associate your artifacts.
     # If you're not sure, you can always safely set this even if you aren't using a matrix.
     job-matrix: '${{ toJSON(matrix) }}'
-
-    # Optional.
-    # The behavior of the action when an artifact's file is not found.
-    #
-    #  Options:
-    #    - ignore: Output neither a warning nor an error; the action will succeed.
-    #    - warn (default): Output a warning; the action will succeed.
-    #    - error: Output an error; the action will fail.
-    if-files-not-found: ''
 ```
 
 ## Example

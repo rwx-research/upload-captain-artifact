@@ -13,27 +13,14 @@ export type TestResult = {
   format: string
 }
 
-export type IfFilesNotFound = 'ignore' | 'warn' | 'error'
-
 export type Inputs = {
   captainBaseUrl: string
   captainToken: string
-  ifFilesNotFound: IfFilesNotFound
   jobMatrix?: {
     [key: string]: string | number | boolean | null | undefined
   }
   jobName: string
   testResults: TestResult[]
-}
-
-function parseIfFilesNotFound(input: string): IfFilesNotFound {
-  if (input === 'ignore' || input === 'warn' || input === 'error') {
-    return input
-  } else {
-    throw new Error(
-      `Unexpected value ${input} for 'if-files-not-found'. Acceptable values are 'ignore', 'warn', and 'error'`
-    )
-  }
 }
 
 function expectEnvironment(variable: string): string {
@@ -79,9 +66,6 @@ export function getInputs(): ValidatedInputs {
     return {
       captainBaseUrl: core.getInput('captain-base-url'),
       captainToken,
-      ifFilesNotFound: parseIfFilesNotFound(
-        core.getInput('if-files-not-found')
-      ),
       jobMatrix: matrix ? JSON.parse(matrix) : undefined,
       jobName: core.getInput('job-name') || expectEnvironment('GITHUB_JOB'),
       testResults: artifacts.map(({name, path, parser}) => ({

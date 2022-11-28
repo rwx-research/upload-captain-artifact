@@ -25,7 +25,6 @@ describe('run', () => {
     const inputs: Inputs = {
       captainBaseUrl: 'https://captain.example.com',
       captainToken: 'fake-token',
-      ifFilesNotFound: 'warn',
       jobMatrix: {some: 'value', other: 'values'},
       jobName: 'some-job-name',
       testResults: [
@@ -88,7 +87,6 @@ describe('run', () => {
     const inputs = {
       captainBaseUrl: 'https://captain.example.com',
       captainToken: 'fake-token',
-      ifFilesNotFound: 'warn',
       jobMatrix: {some: 'value', other: 'values'},
       jobName: 'some-job-name',
       testResults: [

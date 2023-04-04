@@ -106,40 +106,37 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const core = __importStar(__nccwpck_require__(2186));
 const exec = __importStar(__nccwpck_require__(1514));
-const http = __importStar(__nccwpck_require__(6255));
 const tc = __importStar(__nccwpck_require__(7784));
-function fetchVersionLookup() {
-    return __awaiter(this, void 0, void 0, function* () {
-        core.debug('Fetching list of Captain releases');
-        const client = new http.HttpClient();
-        const versions = yield client.getJson('https://releases.captain.build/versions.json');
-        if (versions.statusCode !== 200 || versions.result === null) {
-            throw new Error('Unable to fetch list of Captain releases');
-        }
-        return new Map(Object.entries(versions.result.captain));
-    });
-}
 function setupCaptain() {
     return __awaiter(this, void 0, void 0, function* () {
-        let version = 'v1';
-        const versions = yield fetchVersionLookup();
-        if (!versions.has(version)) {
-            throw new Error(`Unknown version ${version}`);
-        }
-        version = versions.get(version);
+        // hardcoded for upload-captain-artifact
+        const version = 'v1';
+        let extension = '';
         let os = process.platform;
         if (os === 'win32') {
             os = 'windows';
+            extension = '.exe';
         }
         let arch = process.arch;
         if (arch === 'x64') {
-            arch = 'amd64';
+            arch = 'x86_64';
         }
-        const url = `https://releases.captain.build/captain-${os}-${arch}-${version}`;
+        else if (arch === 'arm64') {
+            arch = 'aarch64';
+        }
+        const url = `https://releases.captain.build/${version}/${os}/${arch}/captain${extension}`;
         core.debug(`Fetching ${url}`);
         const captain = yield tc.downloadTool(url);
         core.debug('Installing to /usr/local/bin/captain');
         yield exec.exec('install', [captain, '/usr/local/bin/captain']);
+        const { stdout } = yield exec.getExecOutput('captain', ['--version'], {
+            silent: true
+        });
+        const cliVersion = stdout.replace('\n', '');
+        if (cliVersion !== version && version !== 'v1') {
+            throw new Error(`Unexpected version of Captain installed. Expected ${version} but installed ${cliVersion}`);
+        }
+        core.info(`captain ${cliVersion} is installed`);
     });
 }
 exports["default"] = setupCaptain;

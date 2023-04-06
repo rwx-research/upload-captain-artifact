@@ -1,6 +1,6 @@
 {
   "name": "upload-captain-artifact",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "private": true,
   "description": "This action uploads artifacts, including test results, into Captain.",
   "main": "lib/main.js",

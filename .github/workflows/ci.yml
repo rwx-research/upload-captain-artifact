@@ -27,29 +27,29 @@ jobs:
           artifacts: |
             [
               {
-                "name": "Jest JUnit",
+                "name": "Jest-JUnit",
                 "path": "./junit.xml",
                 "kind": "test_results",
                 "parser": "junit_xml"
               }
             ]
-          job-matrix: '${{ toJSON(matrix) }}'
-          captain-token: '${{ secrets.RWX_ACCESS_TOKEN }}'
+          job-matrix: "${{ toJSON(matrix) }}"
+          captain-token: "${{ secrets.RWX_ACCESS_TOKEN }}"
       - name: Upload artifacts to captain staging
         uses: ./
         with:
           artifacts: |
             [
               {
-                "name": "Jest JUnit",
+                "name": "Jest-JUnit",
                 "path": "./junit.xml",
                 "kind": "test_results",
                 "parser": "junit_xml"
               }
             ]
-          job-matrix: '${{ toJSON(matrix) }}'
-          captain-token: '${{ secrets.RWX_ACCESS_TOKEN_STAGING }}'
-          captain-base-url: '${{ secrets.VANGUARD_STAGING_BASE_URL }}'
+          job-matrix: "${{ toJSON(matrix) }}"
+          captain-token: "${{ secrets.RWX_ACCESS_TOKEN_STAGING }}"
+          captain-base-url: "${{ secrets.VANGUARD_STAGING_BASE_URL }}"
   nix_fmt:
     runs-on: ubuntu-latest
     steps:

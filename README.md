@@ -6,7 +6,7 @@ See the latest documentation at https://www.rwx.com/captain/docs/test-suite-inte
 
 ## Deprecated Documentation
 
-This action uploads test results to [Captain](https://captain.build/).
+This action uploads test results to [Captain](https://rwx.com/captain).
 
 Captain provides observability and tooling compatible with your existing CI platform and testing frameworks.
 Use it for faster and more reliable builds, and happier and more productive engineers.

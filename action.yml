@@ -31,7 +31,7 @@ inputs:
 
   captain-base-url:
     required: false
-    default: https://captain.build
+    default: https://cloud.rwx.com
 runs:
   using: 'node16'
   main: 'dist/index.js'

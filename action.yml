@@ -33,5 +33,5 @@ inputs:
     required: false
     default: https://cloud.rwx.com
 runs:
-  using: 'node16'
+  using: 'node20'
   main: 'dist/index.js'

@@ -104,6 +104,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports["default"] = setupCaptain;
 const core = __importStar(__nccwpck_require__(2186));
 const exec = __importStar(__nccwpck_require__(1514));
 const tc = __importStar(__nccwpck_require__(7784));
@@ -139,7 +140,6 @@ function setupCaptain() {
         core.info(`captain ${cliVersion} is installed`);
     });
 }
-exports["default"] = setupCaptain;
 
 
 /***/ }),
@@ -182,6 +182,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports["default"] = run;
 const core = __importStar(__nccwpck_require__(2186));
 const utils_1 = __nccwpck_require__(412);
 const exec = __importStar(__nccwpck_require__(1514));
@@ -222,7 +223,6 @@ function run() {
         }
     });
 }
-exports["default"] = run;
 
 
 /***/ }),
@@ -256,7 +256,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.getInputs = void 0;
+exports.getInputs = getInputs;
 const core = __importStar(__nccwpck_require__(2186));
 function expectEnvironment(variable) {
     const value = process.env[variable];
@@ -300,7 +300,6 @@ function getInputs() {
         };
     }
 }
-exports.getInputs = getInputs;
 
 
 /***/ }),
